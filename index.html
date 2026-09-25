@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Musica Universalis — Listen to the sky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0b18; --panel:#181530; --panel2:#1f1b3a; --hair:#443a68;
+    --gold:#c9a15c; --golddim:#8a7440; --violet:#a89bd6; --parch:#ece6d6;
+    --muted:#8b849e; --retro:#c1633f; --sea:#131024; --land:#241f42;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(ellipse at 50% -10%,#231d40 0%,var(--bg) 55%);color:var(--parch);
+    font-family:'IBM Plex Mono',monospace;min-height:100vh;-webkit-text-size-adjust:100%}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+  .hero{min-height:96vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:40px 20px 70px;position:relative;overflow:hidden}
+  #stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .hero>*:not(#stars){position:relative;z-index:1}
+  .hero h1{font-size:clamp(40px,7vw,72px);font-weight:600;color:var(--gold);margin:0 0 10px;letter-spacing:.02em}
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .hero h1{
+      background:linear-gradient(100deg,var(--gold) 20%,var(--parch) 42%,var(--violet) 58%,var(--gold) 80%);
+      background-size:300% 100%;-webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;color:transparent;
+      animation:shimmer 16s linear infinite}
+  }
+  @keyframes shimmer{0%{background-position:0% 0}100%{background-position:300% 0}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .hero h1,.hero .creed,.hero .sub,.hero .asabove,.hero details.below{
+    animation:fadeUp .8s cubic-bezier(.22,.8,.3,1) both}
+  .hero .creed{animation-delay:.15s}
+  .hero .sub{animation-delay:.3s}
+  .hero .asabove{animation-delay:.45s}
+  .hero details.below{animation-delay:.6s}
+  .hero .creed{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.4vw,21px);
+    color:var(--violet);margin:0 0 6px;letter-spacing:.06em}
+  .hero .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--muted);margin:0 0 34px}
+  .asabove{background:none;border:1px solid var(--gold);color:var(--gold);font-family:'Cormorant Garamond',serif;
+    font-size:22px;padding:13px 44px;border-radius:2px;cursor:pointer;letter-spacing:.04em;transition:background .2s}
+  .asabove:hover{background:rgba(201,161,92,.1)}
+  .hero details.below{margin-top:26px;width:min(700px,100%);text-align:left}
+  .hero details.below>summary{list-style:none;cursor:pointer;text-align:center;font-family:'Cormorant Garamond',serif;
+    font-style:italic;font-size:16px;color:var(--muted);padding:8px}
+  .hero details.below>summary::-webkit-details-marker{display:none}
+  .hero details.below>summary:hover{color:var(--gold)}
+  .sobelow{background:var(--panel);border:1px solid var(--hair);border-radius:4px;padding:18px;margin-top:10px}
+  .downarrow{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:none;border:none;
+    color:var(--golddim);font-size:26px;cursor:pointer;animation:bob 2.4s ease-in-out infinite;padding:12px 20px}
+  .downarrow:hover{color:var(--gold)}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+  .panel{background:rgba(24,21,48,.72);border:1px solid var(--hair);border-radius:4px;padding:20px;
+    margin-bottom:22px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .panel h2{font-size:20px;color:var(--gold);margin:0 0 14px;font-weight:600}
+  label{color:var(--golddim);font-size:11px;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px}
+  input,select,button{background:var(--panel2);border:1px solid var(--hair);color:var(--parch);
+    font-family:'IBM Plex Mono',monospace;font-size:13px;padding:7px 9px;border-radius:3px}
+  input[type=datetime-local]{cursor:pointer;caret-color:transparent}
+  input[type=datetime-local]:hover{border-color:var(--gold)}
+  select{cursor:pointer}
+  button{cursor:pointer;transition:border-color .15s,color .15s}
+  button:hover{border-color:var(--gold);color:var(--gold)}
+  button.primary{border-color:var(--gold);color:var(--gold);font-size:14px;padding:9px 16px}
+  button.active{background:var(--golddim);color:var(--bg);border-color:var(--golddim)}
+  button:hover{box-shadow:0 2px 12px rgba(201,161,92,.14)}
+  #play.active{animation:pulseRing 2.2s ease-out infinite}
+  @keyframes pulseRing{
+    0%{box-shadow:0 0 0 0 rgba(201,161,92,.45)}
+    70%{box-shadow:0 0 0 14px rgba(201,161,92,0)}
+    100%{box-shadow:0 0 0 0 rgba(201,161,92,0)}}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:rgba(201,161,92,.05)}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  .row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+  .row>div{flex:1;min-width:100px}
+  #map{width:100%;border:1px solid var(--hair);border-radius:3px;cursor:crosshair;display:block;background:var(--sea)}
+  .maphint{font-size:11.5px;color:var(--muted);margin-top:7px;font-style:italic;font-family:'Cormorant Garamond',serif}
+  .maphint b{color:var(--gold);font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px}
+
+  /* place accordion */
+  .placebox{border:1px solid var(--hair);border-radius:3px;background:var(--panel2)}
+  .placecur{padding:9px 11px;font-size:13px;color:var(--gold);border-bottom:1px solid var(--hair)}
+  .placecur span{color:var(--muted);font-size:11px}
+  .acc{max-height:230px;overflow-y:auto}
+  .acc details{border-bottom:1px solid rgba(68,58,104,.35)}
+  .acc details>summary{list-style:none;cursor:pointer;padding:8px 11px;font-size:12.5px;color:var(--parch)}
+  .acc details>summary::-webkit-details-marker{display:none}
+  .acc details>summary:hover{background:rgba(201,161,92,.07)}
+  .acc details>summary::before{content:'▸ ';color:var(--golddim)}
+  .acc details[open]>summary::before{content:'▾ ';color:var(--gold)}
+  .acc .lvl2>summary{padding-left:26px;font-size:12px;color:var(--muted)}
+  .acc .cities{display:flex;flex-wrap:wrap;gap:5px;padding:6px 11px 10px 38px}
+  .acc .cities button{font-size:11.5px;padding:4px 9px;border-radius:12px}
+
+  .skyGrid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+  .skyGrid.split{grid-template-columns:1.05fr .95fr}
+  @media(max-width:880px){.skyGrid.split{grid-template-columns:1fr}}
+  #wheelPanel{position:relative}
+  #wheel{width:100%;max-width:460px;display:block;margin:0 auto}
+  #wheel text.clickable{cursor:pointer}
+
+  /* persistent moon corner */
+  .moonCorner{position:absolute;top:16px;right:16px;display:flex;align-items:center;gap:9px;cursor:pointer;
+    padding:6px 8px;border-radius:20px;transition:background .15s}
+  .moonCorner:hover{background:rgba(168,155,214,.09)}
+  .moondisc{width:34px;height:34px;border-radius:50%;background:#e8e2d0;position:relative;overflow:hidden;
+    border:1px solid var(--hair);flex-shrink:0}
+  .moonshadow{position:absolute;top:0;height:100%;background:#0d0b18}
+  .moonlabel{font-size:10.5px;line-height:1.45;color:var(--violet);text-align:left;white-space:nowrap}
+  .moonlabel b{display:block;font-weight:500;font-size:11px}
+  .moonlabel span{color:var(--muted)}
+  @media(max-width:520px){.moonCorner{position:static;justify-content:center;margin:0 auto 4px}}
+
+  .livemoment{text-align:center;font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--gold);margin:8px 0 2px}
+  .legend{font-size:11px;color:var(--muted);text-align:center;line-height:1.7;margin-top:6px;
+    font-family:'Cormorant Garamond',serif;font-style:italic}
+  /* clock strip — fixed grid: 4 across on desktop, 2x2 on mobile. Never reflows. */
+  .clockgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 0}
+  @media(max-width:700px){.clockgrid{grid-template-columns:repeat(2,1fr)}}
+  .cbtn{background:none;border:1px solid transparent;border-radius:4px;padding:6px 4px;
+    text-align:center;overflow:hidden;min-height:46px;cursor:pointer}
+  .cbtn:hover{background:var(--panel2);border-color:var(--hair)}
+  .cbtn.on{background:var(--panel2);border-color:var(--gold)}
+  .cbtn .k{display:block;font-size:9.5px;color:var(--golddim);text-transform:uppercase;
+    letter-spacing:.07em;white-space:nowrap;overflow:hidden}
+  .cbtn .v{display:block;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+  .cbtn .v.sol{color:var(--violet)}
+  .clockinfo{font-size:11.5px;color:var(--muted);line-height:1.7;padding:10px 12px;margin-top:8px;
+    text-align:left;font-family:'Cormorant Garamond',serif;font-style:italic;
+    background:var(--panel2);border:1px solid var(--hair);border-radius:4px;min-height:62px}
+  .clockinfo[hidden]{display:none}
+
+  /* reading cards — column count set by container width, never by content */
+  .cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));margin-top:12px}
+  .card{background:var(--panel2);border:1px solid var(--hair);border-radius:4px;overflow:hidden}
+  .card>summary{list-style:none;cursor:pointer;padding:9px 12px;overflow:hidden}
+  .card>summary::-webkit-details-marker{display:none}
+  .card>summary:hover{background:rgba(201,161,92,.06)}
+  .card .ck{display:block;font-size:9.5px;color:var(--golddim);text-transform:uppercase;
+    letter-spacing:.07em;white-space:nowrap}
+  .card .cv{display:block;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;min-height:24px}
+  .card.retroCard .cv{color:var(--retro)}
+  .card.moonCard .cv{color:var(--violet)}
+  .cbody{padding:0 12px 12px;min-height:104px;font-size:12px;line-height:1.7}
+  /* fixed-slot glyph strip: constant element count, single row, can never wrap */
+  .strip{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;height:30px;
+    align-items:center;margin-bottom:7px}
+  .strip.five{grid-template-columns:repeat(5,1fr)}
+  .strip span{display:flex;align-items:center;justify-content:center;font-size:17px;
+    color:var(--gold);line-height:1}
+  .strip span.off{opacity:.15}
+  .strip span.rx{color:var(--retro)}
+  .cnote{color:var(--muted);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;line-height:1.65}
+  .tuneline{margin-top:12px;font-size:12px;color:var(--muted);font-family:'Cormorant Garamond',serif;
+    font-style:italic;text-align:center}
+  .instrument{margin-top:12px}
+  .instrument>summary{list-style:none;cursor:pointer;text-align:center;color:var(--golddim);font-size:12px;
+    text-transform:uppercase;letter-spacing:.08em;padding:8px}
+  .instrument>summary::-webkit-details-marker{display:none}
+  .instrument>summary:hover{color:var(--gold)}
+  .transport{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:10px}
+  .soundctl{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;justify-content:center;margin-top:12px}
+  .soundctl label{margin-bottom:3px;font-size:10px}
+  .listenall{display:none;margin:10px auto 0}
+  .listenall.show{display:block}
+
+  /* info panel */
+  .scrim{display:none;position:fixed;inset:0;background:rgba(6,5,14,.55);z-index:39}
+  .scrim.show{display:block}
+  @media(min-width:881px){.scrim{display:none!important}}
+  .infopanel{display:none;background:var(--panel);border:1px solid var(--hair);border-radius:4px;padding:0}
+  .skyGrid.split .infopanel{display:block}
+  .infohead{position:sticky;top:0;z-index:3;background:var(--panel);border-bottom:1px solid var(--hair);
+    display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:4px 4px 0 0}
+  .grabber{width:42px;height:4px;border-radius:2px;background:var(--hair);margin:0 auto;display:none}
+  .closex{background:var(--panel2);border:1px solid var(--hair);color:var(--parch);font-size:13px;
+    min-width:88px;min-height:40px;border-radius:20px;padding:8px 16px}
+  .infobody{padding:16px 20px 22px}
+  @media(max-width:880px){
+    .skyGrid.split .infopanel{position:fixed;left:0;right:0;bottom:0;z-index:40;max-height:72vh;
+      overflow-y:auto;border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.6);
+      -webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,0)}
+    .infohead{border-radius:14px 14px 0 0;flex-direction:column;gap:8px;padding:8px 12px 10px}
+    .grabber{display:block}
+    .closex{width:100%;min-height:46px}
+  }
+  .infopanel h2{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+  .infopanel h2 .bigglyph{font-size:26px}
+  .tradition{font-family:'Cormorant Garamond',serif;font-size:15.5px;font-style:italic;color:var(--parch);
+    line-height:1.75;margin:4px 0 14px}
+  .nowblock{border-top:1px solid var(--hair);padding-top:12px;font-size:12.5px;line-height:1.9}
+  .nowblock .k{color:var(--golddim)}
+  .mixrow{display:flex;gap:8px;margin-top:14px}
+  .mixrow button{flex:1;min-height:42px}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+  th{text-align:left;color:var(--golddim);font-size:10px;text-transform:uppercase;letter-spacing:.06em;
+     padding:5px 6px;border-bottom:1px solid var(--hair);font-weight:500}
+  td{padding:6px;border-bottom:1px solid rgba(68,58,104,.4)}
+  tr.retro td{color:var(--retro)}
+  tr.below td{opacity:.45}
+  .glyph{font-size:15px;margin-right:6px}
+  .tag{font-size:9.5px;padding:1px 6px;border-radius:9px;border:1px solid var(--retro);color:var(--retro)}
+  .reading{font-size:13.5px;line-height:1.9}
+  .reading p{margin:0 0 11px}
+  .reading .lead{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15.5px;color:var(--muted)}
+  .hl{color:var(--gold)} .hlv{color:var(--violet)} .hlr{color:var(--retro)}
+  .bar{height:3px;background:var(--panel2);border-radius:2px;overflow:hidden;margin-top:3px}
+  .bar i{display:block;height:100%;background:var(--gold)}
+  .behold{border-top:1px solid var(--hair);margin-top:16px;padding-top:10px}
+  .behold>summary{list-style:none;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold);padding:4px}
+  .behold>summary::-webkit-details-marker{display:none}
+  .behold>summary::before{content:'❧ ';color:var(--golddim)}
+  .behold[open]>summary::before{content:'❦ '}
+  .beholdbody{font-size:12.5px;color:var(--muted);line-height:1.8;margin-top:10px}
+  .beholdbody b{color:var(--violet);font-weight:500}
+  .beholdbody .term{color:var(--gold)}
+  .beholdbody table{font-size:12px;margin:8px 0 14px}
+
+  .minibar{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--panel);border:1px solid var(--gold);
+    border-radius:24px;padding:8px 14px;display:none;align-items:center;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+  .minibar.show{display:flex}
+  .minibar button{border-radius:16px;min-height:38px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--gold);
+    color:var(--gold);padding:8px 18px;border-radius:20px;font-size:12px;opacity:0;transition:opacity .3s;z-index:60;pointer-events:none}
+  .toast.show{opacity:1}
+  footer{max-width:700px;margin:34px auto 40px;font-size:12px;color:var(--muted);line-height:1.7;
+    font-family:'Cormorant Garamond',serif;font-style:italic;text-align:center;padding:0 20px}
+  @media(prefers-reduced-motion:reduce){
+    .hero h1,.hero .creed,.hero .sub,.hero .asabove,.hero details.below{animation:none}
+    .hero h1{animation:none}
+    #play.active{animation:none}
+    .downarrow{animation:none}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ ✎ EDITABLE TEXT — HERO / LANDING ═══════════════ -->
+<section class="hero" id="top">
+  <canvas id="stars"></canvas>
+  <h1>Musica Universalis</h1>
+  <p class="creed">Mundana &middot; Instrumentalis &middot; Humana</p>
+  <p class="sub">Listen to the sky.</p>
+  <button class="asabove" id="asAbove">As above</button>
+  <details class="below" id="soBelow">
+    <summary>…so below — another moment, another place</summary>
+    <div class="sobelow">
+      <div class="row" style="margin-bottom:14px">
+        <div style="flex:2;min-width:190px">
+          <label>Date &amp; time (local clock)</label>
+          <input type="datetime-local" id="dt" style="width:100%">
+        </div>
+        <div style="flex:0"><button id="shareBtn" title="Copy a link to this exact sky">Share this sky</button></div>
+      </div>
+
+      <label>Place</label>
+      <div class="placebox" style="margin-bottom:14px">
+        <div class="placecur" id="placeCur">—</div>
+        <div class="acc" id="placeAcc"></div>
+      </div>
+
+      <div class="row" style="margin-bottom:14px">
+        <div><label>Latitude</label><input type="number" id="lat" step="0.01" min="-90" max="90" style="width:100%"></div>
+        <div><label>Longitude</label><input type="number" id="lon" step="0.01" min="-180" max="180" style="width:100%"></div>
+        <div style="flex:1.4"><label>Time zone</label><select id="tz" style="width:100%"></select></div>
+      </div>
+
+      <label>Or click anywhere on the earth</label>
+      <svg id="map" viewBox="0 0 720 360" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="maphint" id="placehint">—</div>
+    </div>
+  </details>
+  <button class="downarrow" id="scrollDown" title="To the sky">↓</button>
+</section>
+<!-- ═══════════════ end editable: hero ═══════════════ -->
+
+<div class="wrap" id="skySection">
+  <div class="skyGrid" id="skyGrid">
+
+    <div class="panel reveal" id="wheelPanel">
+      <div class="moonCorner" id="moonCorner" title="The Moon — click for more">
+        <div class="moondisc"><div class="moonshadow" id="cornerShadow"></div></div>
+        <div class="moonlabel"><b id="cornerPhase">—</b><span id="cornerPct">—</span></div>
+      </div>
+      <svg id="wheel" viewBox="0 0 440 440"></svg>
+      <!-- ✎ EDITABLE TEXT — WHEEL LEGEND -->
+      <div class="legend">
+        outer ring — direct planets · dashed ring — retrograde, drawn inward · inner ring — Sun &amp; Moon<br>
+        shaded half — beneath the horizon · gold line — the east, where bodies rise · <span style="color:var(--gold)">tap any body or sign for its story</span>
+      </div>
+      <div class="clockgrid">
+        <button type="button" class="cbtn" data-info="date"><span class="k">Date</span><span class="v" id="liveDate">—</span></button>
+        <button type="button" class="cbtn" data-info="clock"><span class="k">Clock time</span><span class="v" id="clockT">—</span></button>
+        <button type="button" class="cbtn" data-info="sun"><span class="k">Sun time</span><span class="v sol" id="solarT">—</span></button>
+        <button type="button" class="cbtn" data-info="asc"><span class="k">Rising</span><span class="v" id="ascT">—</span></button>
+      </div>
+      <div class="clockinfo" id="clockInfo" hidden></div>
+      <div class="transport">
+        <button class="primary" id="play">Listen</button>
+        <button id="freeze">Freeze</button>
+      </div>
+      <button class="listenall" id="listenAll">Listen to all</button>
+      <details class="instrument">
+        <summary>The instrument — time &amp; tuning</summary>
+        <div class="transport">
+          <select id="rate" title="How fast time flows">
+            <option value="1">real time</option>
+            <option value="60">1 min / sec</option>
+            <option value="600">10 min / sec</option>
+            <option value="3600">1 hour / sec</option>
+            <option value="86400">1 day / sec</option>
+          </select>
+          <select id="gear" title="The hand: the horizon itself, or geared up from it">
+            <option value="1">hand — true horizon</option>
+            <option value="12">hand — ×12</option>
+            <option value="24">hand — ×24</option>
+            <option value="144">hand — ×144</option>
+          </select>
+        </div>
+        <div class="soundctl">
+          <div><label>Root body</label>
+            <select id="rootBody">
+              <option value="earth" selected>Earth (silent)</option>
+              <option value="moon">Moon</option><option value="mercury">Mercury</option>
+              <option value="venus">Venus</option><option value="sun">Sun</option>
+              <option value="mars">Mars</option><option value="jupiter">Jupiter</option>
+              <option value="saturn">Saturn</option>
+            </select></div>
+          <div><label>Root pitch</label><select id="rootPitch"></select></div>
+          <div><label>Scale</label>
+            <select id="scale">
+              <option value="major" selected>Major</option>
+              <option value="pure">Pythagorean (pure)</option>
+              <option value="minor">Natural minor</option>
+              <option value="dorian">Dorian</option>
+              <option value="lydian">Lydian</option>
+              <option value="mixolydian">Mixolydian</option>
+              <option value="pentatonic">Pentatonic</option>
+              <option value="minorpent">Minor pentatonic</option>
+            </select></div>
+          <div><label>Volume</label><input type="range" id="vol" min="-40" max="-4" value="-16" style="width:86px"></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="infopanel panel" id="infoPanel">
+      <div class="infohead">
+        <div class="grabber"></div>
+        <button class="closex" id="infoClose">✕ Close</button>
+      </div>
+      <div class="infobody" id="infoContent"></div>
+    </div>
+
+  </div>
+
+  <div class="panel reveal" id="readingPanel">
+    <h2>Reading the sky</h2>
+    <div class="reading" id="readLead"><p class="lead">—</p></div>
+    <div class="cards">
+      <details class="card" open>
+        <summary><span class="ck">Rising</span><span class="cv" id="cvRise">—</span></summary>
+        <div class="cbody" id="cbRise"></div>
+      </details>
+      <details class="card" open>
+        <summary><span class="ck">The Sun</span><span class="cv" id="cvSun">—</span></summary>
+        <div class="cbody" id="cbSun"></div>
+      </details>
+      <details class="card moonCard" open>
+        <summary><span class="ck">The Moon</span><span class="cv" id="cvMoon">—</span></summary>
+        <div class="cbody" id="cbMoon"></div>
+      </details>
+      <details class="card" open>
+        <summary><span class="ck">Above the horizon</span><span class="cv" id="cvAbove">—</span></summary>
+        <div class="cbody" id="cbAbove"></div>
+      </details>
+      <details class="card" open>
+        <summary><span class="ck">Beneath the earth</span><span class="cv" id="cvBelow">—</span></summary>
+        <div class="cbody" id="cbBelow"></div>
+      </details>
+      <details class="card retroCard" open>
+        <summary><span class="ck">Retrograde</span><span class="cv" id="cvRetro">—</span></summary>
+        <div class="cbody" id="cbRetro"></div>
+      </details>
+    </div>
+    <div class="tuneline" id="tuneLine">—</div>
+    <table>
+      <thead><tr><th>Body</th><th>Position</th><th>House</th><th>Altitude</th><th>Voice</th><th>Motion</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <!-- ═══════════════ ✎ EDITABLE TEXT — "BEHOLD, THE COSMOS" ═══════════════ -->
+    <details class="behold">
+      <summary>Behold, the cosmos</summary>
+      <div class="beholdbody">
+        <p><span class="term">The three musics.</span> Boethius divided all music in three:
+        <b>musica mundana</b>, the inaudible harmony of the cosmos itself; <b>musica humana</b>, the harmony of body and
+        soul; and <b>musica instrumentalis</b>, the music instruments make. This device is a bridge — it takes the first
+        and renders it as the third, for the benefit of the second. You.</p>
+        <p><span class="term">The ladder of the spheres.</span> Pythagoras found that the consonant intervals are simple
+        ratios of string length — halve a string, hear the octave. The ancients stacked those same ratios up the heavens,
+        from the Earth beneath your feet to Saturn, the farthest light the old sky knew. This engine uses the classical
+        ascent, and it spans exactly one octave — the <b>diapason</b>:</p>
+        <table>
+          <thead><tr><th>Body</th><th>Ratio to Earth</th><th>Interval</th></tr></thead>
+          <tbody>
+            <tr><td>Earth</td><td>1 / 1</td><td>the silent root — you stand on it</td></tr>
+            <tr><td>☽ Moon</td><td>9 / 8</td><td>whole tone</td></tr>
+            <tr><td>☿ Mercury</td><td>81 / 64</td><td>major third (the ditone)</td></tr>
+            <tr><td>♀ Venus</td><td>4 / 3</td><td>perfect fourth</td></tr>
+            <tr><td>☉ Sun</td><td>3 / 2</td><td>perfect fifth</td></tr>
+            <tr><td>♂ Mars</td><td>27 / 16</td><td>major sixth</td></tr>
+            <tr><td>♃ Jupiter</td><td>243 / 128</td><td>major seventh</td></tr>
+            <tr><td>♄ Saturn</td><td>2 / 1</td><td>the octave — the diapason complete</td></tr>
+          </tbody>
+        </table>
+        <p><span class="term">Retrograde.</span> Sometimes a planet appears to stop against the stars and run backward
+        for weeks. Nothing truly reverses — it is Earth overtaking a slower world, the way a passed car seems to slide
+        backward. The old astrologers read it as a turning-inward: review, delay, interiority. Here, a retrograde planet
+        withdraws to the inner dashed ring, and its voice trembles.</p>
+        <p><span class="term">Why the place matters.</span> The zodiac positions are the same seen from anywhere on
+        Earth. But the <b>horizon</b> is yours alone. Your latitude and longitude decide which bodies stand overhead and
+        which lie beneath the earth — and in this instrument, presence follows altitude. Two people at the same moment on
+        opposite sides of the world hear the same chord, voiced entirely differently.</p>
+        <p><span class="term">The Moon's secret.</span> The phase of the Moon is not a property of the Moon at all — it
+        is the <b>angle between the Moon and the Sun</b>. New moon is their conjunction; full moon their opposition; the
+        quarters their squares. It is the only aspect in the whole sky visible to the naked eye, and everyone who has
+        ever lived has watched it without knowing its name. Here the Moon rules the air itself: at the new moon the sound
+        is close, dark and thin; as she waxes the veil lifts, the body returns, and the room opens vast and ringing.</p>
+        <p><span class="term">How true is this?</span> Positions come from a modern ephemeris accurate to about one
+        arc-minute — a sixtieth of a degree — over thousands of years. The Ascendant is computed from the sidereal
+        rotation of the Earth for your exact coordinates. The clock conversion honours the full historical time-zone
+        record, including daylight saving as it actually was. The sky you hear is the sky that stood there.</p>
+      </div>
+    </details>
+    <!-- ═══════════════ end editable: behold ═══════════════ -->
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="minibar" id="miniBar">
+  <span style="font-size:11px;color:var(--golddim)">sounding</span>
+  <button id="miniStop">Stop</button>
+  <input type="range" id="miniVol" min="-40" max="-4" value="-16" style="width:80px">
+</div>
+<div class="toast" id="toast">Link copied</div>
+
+<!-- ✎ EDITABLE TEXT — FOOTER -->
+<footer>
+  Positions from Astronomy Engine (truncated VSOP87, ±1 arc-minute), geocentric tropical zodiac, converted to your
+  horizon. Ascendant and Whole Sign houses from local sidereal time. The ladder runs Earth to Saturn across exactly
+  one octave — the diapason of the spheres, as the ancients claimed.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+
+<script>
+// continent -> country -> [name, lat, lon, IANA zone]
+const PLACES={
+"Europe":{
+ "United Kingdom":[["London",51.51,-0.13,"Europe/London"],["Manchester",53.48,-2.24,"Europe/London"],["Birmingham",52.49,-1.89,"Europe/London"],["Glasgow",55.86,-4.25,"Europe/London"],["Edinburgh",55.95,-3.19,"Europe/London"],["Cardiff",51.48,-3.18,"Europe/London"],["Belfast",54.60,-5.93,"Europe/London"]],
+ "Ireland":[["Dublin",53.35,-6.26,"Europe/Dublin"],["Cork",51.90,-8.47,"Europe/Dublin"]],
+ "France":[["Paris",48.86,2.35,"Europe/Paris"],["Marseille",43.30,5.37,"Europe/Paris"],["Lyon",45.76,4.84,"Europe/Paris"],["Bordeaux",44.84,-0.58,"Europe/Paris"]],
+ "Germany":[["Berlin",52.52,13.40,"Europe/Berlin"],["Munich",48.14,11.58,"Europe/Berlin"],["Hamburg",53.55,9.99,"Europe/Berlin"],["Cologne",50.94,6.96,"Europe/Berlin"],["Frankfurt",50.11,8.68,"Europe/Berlin"]],
+ "Spain":[["Madrid",40.42,-3.70,"Europe/Madrid"],["Barcelona",41.39,2.17,"Europe/Madrid"],["Seville",37.39,-5.98,"Europe/Madrid"],["Valencia",39.47,-0.38,"Europe/Madrid"]],
+ "Portugal":[["Lisbon",38.72,-9.14,"Europe/Lisbon"],["Porto",41.15,-8.61,"Europe/Lisbon"]],
+ "Italy":[["Rome",41.90,12.50,"Europe/Rome"],["Milan",45.46,9.19,"Europe/Rome"],["Naples",40.85,14.27,"Europe/Rome"],["Venice",45.44,12.32,"Europe/Rome"],["Florence",43.77,11.26,"Europe/Rome"]],
+ "Netherlands":[["Amsterdam",52.37,4.90,"Europe/Amsterdam"],["Rotterdam",51.92,4.48,"Europe/Amsterdam"]],
+ "Belgium":[["Brussels",50.85,4.35,"Europe/Brussels"],["Antwerp",51.22,4.40,"Europe/Brussels"]],
+ "Switzerland":[["Zurich",47.38,8.54,"Europe/Zurich"],["Geneva",46.20,6.14,"Europe/Zurich"],["Bern",46.95,7.45,"Europe/Zurich"]],
+ "Austria":[["Vienna",48.21,16.37,"Europe/Vienna"],["Salzburg",47.81,13.06,"Europe/Vienna"]],
+ "Sweden":[["Stockholm",59.33,18.07,"Europe/Stockholm"],["Gothenburg",57.71,11.97,"Europe/Stockholm"]],
+ "Norway":[["Oslo",59.91,10.75,"Europe/Oslo"],["Bergen",60.39,5.32,"Europe/Oslo"],["Tromso",69.65,18.96,"Europe/Oslo"]],
+ "Denmark":[["Copenhagen",55.68,12.57,"Europe/Copenhagen"]],
+ "Finland":[["Helsinki",60.17,24.94,"Europe/Helsinki"]],
+ "Iceland":[["Reykjavik",64.15,-21.94,"Atlantic/Reykjavik"]],
+ "Poland":[["Warsaw",52.23,21.01,"Europe/Warsaw"],["Krakow",50.06,19.94,"Europe/Warsaw"]],
+ "Czechia":[["Prague",50.08,14.44,"Europe/Prague"]],
+ "Hungary":[["Budapest",47.50,19.04,"Europe/Budapest"]],
+ "Greece":[["Athens",37.98,23.73,"Europe/Athens"],["Thessaloniki",40.64,22.94,"Europe/Athens"]],
+ "Russia":[["Moscow",55.76,37.62,"Europe/Moscow"],["St Petersburg",59.93,30.34,"Europe/Moscow"],["Yekaterinburg",56.84,60.65,"Asia/Yekaterinburg"],["Novosibirsk",55.01,82.94,"Asia/Novosibirsk"],["Vladivostok",43.12,131.89,"Asia/Vladivostok"]],
+ "Ukraine":[["Kyiv",50.45,30.52,"Europe/Kyiv"],["Odesa",46.48,30.73,"Europe/Kyiv"]],
+ "Romania":[["Bucharest",44.43,26.10,"Europe/Bucharest"]],
+ "Croatia":[["Zagreb",45.81,15.98,"Europe/Zagreb"],["Split",43.51,16.44,"Europe/Zagreb"]],
+ "Serbia":[["Belgrade",44.79,20.45,"Europe/Belgrade"]],
+ "Bulgaria":[["Sofia",42.70,23.32,"Europe/Sofia"]]
+},
+"Asia":{
+ "Japan":[["Tokyo",35.68,139.69,"Asia/Tokyo"],["Osaka",34.69,135.50,"Asia/Tokyo"],["Kyoto",35.01,135.77,"Asia/Tokyo"],["Sapporo",43.06,141.35,"Asia/Tokyo"]],
+ "China":[["Beijing",39.90,116.41,"Asia/Shanghai"],["Shanghai",31.23,121.47,"Asia/Shanghai"],["Guangzhou",23.13,113.26,"Asia/Shanghai"],["Chengdu",30.57,104.07,"Asia/Shanghai"],["Xi'an",34.34,108.94,"Asia/Shanghai"]],
+ "Hong Kong":[["Hong Kong",22.32,114.17,"Asia/Hong_Kong"]],
+ "Taiwan":[["Taipei",25.03,121.57,"Asia/Taipei"]],
+ "South Korea":[["Seoul",37.57,126.98,"Asia/Seoul"],["Busan",35.18,129.08,"Asia/Seoul"]],
+ "India":[["Delhi",28.61,77.21,"Asia/Kolkata"],["Mumbai",19.08,72.88,"Asia/Kolkata"],["Bengaluru",12.97,77.59,"Asia/Kolkata"],["Kolkata",22.57,88.36,"Asia/Kolkata"],["Chennai",13.08,80.27,"Asia/Kolkata"],["Jaipur",26.91,75.79,"Asia/Kolkata"],["Varanasi",25.32,82.97,"Asia/Kolkata"]],
+ "Pakistan":[["Karachi",24.86,67.01,"Asia/Karachi"],["Lahore",31.55,74.34,"Asia/Karachi"],["Islamabad",33.68,73.05,"Asia/Karachi"]],
+ "Bangladesh":[["Dhaka",23.81,90.41,"Asia/Dhaka"]],
+ "Nepal":[["Kathmandu",27.72,85.32,"Asia/Kathmandu"]],
+ "Sri Lanka":[["Colombo",6.93,79.86,"Asia/Colombo"]],
+ "Thailand":[["Bangkok",13.76,100.50,"Asia/Bangkok"],["Chiang Mai",18.79,98.99,"Asia/Bangkok"]],
+ "Vietnam":[["Hanoi",21.03,105.85,"Asia/Ho_Chi_Minh"],["Ho Chi Minh City",10.82,106.63,"Asia/Ho_Chi_Minh"]],
+ "Singapore":[["Singapore",1.35,103.82,"Asia/Singapore"]],
+ "Malaysia":[["Kuala Lumpur",3.14,101.69,"Asia/Kuala_Lumpur"]],
+ "Indonesia":[["Jakarta",-6.21,106.85,"Asia/Jakarta"],["Denpasar (Bali)",-8.65,115.22,"Asia/Makassar"]],
+ "Philippines":[["Manila",14.60,120.98,"Asia/Manila"],["Cebu",10.32,123.89,"Asia/Manila"]],
+ "United Arab Emirates":[["Dubai",25.20,55.27,"Asia/Dubai"],["Abu Dhabi",24.45,54.38,"Asia/Dubai"]],
+ "Saudi Arabia":[["Riyadh",24.71,46.68,"Asia/Riyadh"],["Mecca",21.39,39.86,"Asia/Riyadh"],["Jeddah",21.49,39.19,"Asia/Riyadh"]],
+ "Israel":[["Jerusalem",31.77,35.21,"Asia/Jerusalem"],["Tel Aviv",32.08,34.78,"Asia/Jerusalem"]],
+ "Turkey":[["Istanbul",41.01,28.98,"Europe/Istanbul"],["Ankara",39.93,32.86,"Europe/Istanbul"],["Izmir",38.42,27.14,"Europe/Istanbul"]],
+ "Iran":[["Tehran",35.69,51.39,"Asia/Tehran"],["Isfahan",32.65,51.67,"Asia/Tehran"]],
+ "Iraq":[["Baghdad",33.31,44.37,"Asia/Baghdad"]],
+ "Kazakhstan":[["Almaty",43.24,76.89,"Asia/Almaty"],["Astana",51.17,71.43,"Asia/Almaty"]],
+ "Uzbekistan":[["Tashkent",41.30,69.24,"Asia/Tashkent"],["Samarkand",39.65,66.96,"Asia/Tashkent"]],
+ "Mongolia":[["Ulaanbaatar",47.89,106.91,"Asia/Ulaanbaatar"]]
+},
+"Africa":{
+ "Egypt":[["Cairo",30.04,31.24,"Africa/Cairo"],["Alexandria",31.20,29.92,"Africa/Cairo"],["Luxor",25.69,32.64,"Africa/Cairo"]],
+ "Morocco":[["Casablanca",33.57,-7.59,"Africa/Casablanca"],["Marrakesh",31.63,-7.99,"Africa/Casablanca"],["Fez",34.02,-5.00,"Africa/Casablanca"]],
+ "Algeria":[["Algiers",36.75,3.06,"Africa/Algiers"]],
+ "Tunisia":[["Tunis",36.81,10.18,"Africa/Tunis"]],
+ "Nigeria":[["Lagos",6.52,3.38,"Africa/Lagos"],["Abuja",9.06,7.49,"Africa/Lagos"],["Kano",12.00,8.52,"Africa/Lagos"]],
+ "Ghana":[["Accra",5.60,-0.19,"Africa/Accra"]],
+ "Senegal":[["Dakar",14.72,-17.47,"Africa/Dakar"]],
+ "Kenya":[["Nairobi",-1.29,36.82,"Africa/Nairobi"],["Mombasa",-4.04,39.67,"Africa/Nairobi"]],
+ "Ethiopia":[["Addis Ababa",9.03,38.74,"Africa/Addis_Ababa"]],
+ "Tanzania":[["Dar es Salaam",-6.79,39.21,"Africa/Dar_es_Salaam"],["Zanzibar",-6.16,39.20,"Africa/Dar_es_Salaam"]],
+ "Uganda":[["Kampala",0.35,32.58,"Africa/Kampala"]],
+ "South Africa":[["Johannesburg",-26.20,28.05,"Africa/Johannesburg"],["Cape Town",-33.92,18.42,"Africa/Johannesburg"],["Durban",-29.86,31.02,"Africa/Johannesburg"]],
+ "Zimbabwe":[["Harare",-17.83,31.05,"Africa/Harare"]],
+ "Democratic Republic of the Congo":[["Kinshasa",-4.44,15.27,"Africa/Kinshasa"]],
+ "Madagascar":[["Antananarivo",-18.88,47.51,"Indian/Antananarivo"]]
+},
+"North America":{
+ "United States":[["New York",40.71,-74.01,"America/New_York"],["Los Angeles",34.05,-118.24,"America/Los_Angeles"],["Chicago",41.88,-87.63,"America/Chicago"],["Houston",29.76,-95.37,"America/Chicago"],["Phoenix",33.45,-112.07,"America/Phoenix"],["Philadelphia",39.95,-75.17,"America/New_York"],["San Antonio",29.42,-98.49,"America/Chicago"],["San Diego",32.72,-117.16,"America/Los_Angeles"],["Dallas",32.78,-96.80,"America/Chicago"],["San Francisco",37.77,-122.42,"America/Los_Angeles"],["Seattle",47.61,-122.33,"America/Los_Angeles"],["Denver",39.74,-104.99,"America/Denver"],["Boston",42.36,-71.06,"America/New_York"],["Miami",25.76,-80.19,"America/New_York"],["Atlanta",33.75,-84.39,"America/New_York"],["New Orleans",29.95,-90.07,"America/Chicago"],["Las Vegas",36.17,-115.14,"America/Los_Angeles"],["Detroit",42.33,-83.05,"America/Detroit"],["Minneapolis",44.98,-93.27,"America/Chicago"],["Portland",45.52,-122.68,"America/Los_Angeles"],["Anchorage",61.22,-149.90,"America/Anchorage"],["Honolulu",21.31,-157.86,"Pacific/Honolulu"]],
+ "Canada":[["Toronto",43.65,-79.38,"America/Toronto"],["Montreal",45.50,-73.57,"America/Toronto"],["Vancouver",49.28,-123.12,"America/Vancouver"],["Calgary",51.05,-114.07,"America/Edmonton"],["Ottawa",45.42,-75.70,"America/Toronto"],["Halifax",44.65,-63.58,"America/Halifax"],["Winnipeg",49.90,-97.14,"America/Winnipeg"]],
+ "Mexico":[["Mexico City",19.43,-99.13,"America/Mexico_City"],["Guadalajara",20.68,-103.35,"America/Mexico_City"],["Monterrey",25.69,-100.32,"America/Monterrey"],["Cancun",21.16,-86.85,"America/Cancun"],["Oaxaca",17.07,-96.72,"America/Mexico_City"]],
+ "Cuba":[["Havana",23.11,-82.37,"America/Havana"]],
+ "Jamaica":[["Kingston",17.97,-76.79,"America/Jamaica"]],
+ "Dominican Republic":[["Santo Domingo",18.49,-69.93,"America/Santo_Domingo"]],
+ "Guatemala":[["Guatemala City",14.63,-90.51,"America/Guatemala"]],
+ "Costa Rica":[["San Jose",9.93,-84.08,"America/Costa_Rica"]],
+ "Panama":[["Panama City",8.98,-79.52,"America/Panama"]]
+},
+"South America":{
+ "Brazil":[["Sao Paulo",-23.55,-46.63,"America/Sao_Paulo"],["Rio de Janeiro",-22.91,-43.17,"America/Sao_Paulo"],["Brasilia",-15.79,-47.88,"America/Sao_Paulo"],["Salvador",-12.97,-38.50,"America/Bahia"],["Manaus",-3.12,-60.02,"America/Manaus"],["Recife",-8.05,-34.88,"America/Recife"]],
+ "Argentina":[["Buenos Aires",-34.60,-58.38,"America/Argentina/Buenos_Aires"],["Cordoba",-31.42,-64.18,"America/Argentina/Cordoba"],["Mendoza",-32.89,-68.84,"America/Argentina/Mendoza"]],
+ "Chile":[["Santiago",-33.45,-70.67,"America/Santiago"],["Valparaiso",-33.05,-71.62,"America/Santiago"]],
+ "Peru":[["Lima",-12.05,-77.04,"America/Lima"],["Cusco",-13.53,-71.97,"America/Lima"]],
+ "Colombia":[["Bogota",4.71,-74.07,"America/Bogota"],["Medellin",6.24,-75.57,"America/Bogota"],["Cartagena",10.39,-75.51,"America/Bogota"]],
+ "Venezuela":[["Caracas",10.48,-66.90,"America/Caracas"]],
+ "Ecuador":[["Quito",-0.18,-78.47,"America/Guayaquil"],["Guayaquil",-2.17,-79.92,"America/Guayaquil"]],
+ "Bolivia":[["La Paz",-16.50,-68.15,"America/La_Paz"]],
+ "Uruguay":[["Montevideo",-34.90,-56.16,"America/Montevideo"]],
+ "Paraguay":[["Asuncion",-25.28,-57.63,"America/Asuncion"]]
+},
+"Oceania":{
+ "Australia":[["Sydney",-33.87,151.21,"Australia/Sydney"],["Melbourne",-37.81,144.96,"Australia/Melbourne"],["Brisbane",-27.47,153.03,"Australia/Brisbane"],["Perth",-31.95,115.86,"Australia/Perth"],["Adelaide",-34.93,138.60,"Australia/Adelaide"],["Canberra",-35.28,149.13,"Australia/Sydney"],["Darwin",-12.46,130.84,"Australia/Darwin"],["Hobart",-42.88,147.32,"Australia/Hobart"]],
+ "New Zealand":[["Auckland",-36.85,174.76,"Pacific/Auckland"],["Wellington",-41.29,174.78,"Pacific/Auckland"],["Christchurch",-43.53,172.64,"Pacific/Auckland"]],
+ "Fiji":[["Suva",-18.14,178.44,"Pacific/Fiji"]],
+ "Papua New Guinea":[["Port Moresby",-9.44,147.18,"Pacific/Port_Moresby"]],
+ "French Polynesia":[["Papeete",-17.54,-149.57,"Pacific/Tahiti"]]
+},
+"Antarctica":{
+ "Research stations":[["McMurdo",-77.85,166.67,"Pacific/Auckland"],["Rothera",-67.57,-68.13,"Antarctica/Rothera"],["Davis",-68.58,77.97,"Antarctica/Davis"]]
+}};
+
+const D=Math.PI/180,R=180/Math.PI;
+const rev=x=>((x%360)+360)%360;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const sstep=(x,a,b)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const shortest=(f,t)=>((t-f+540)%360)-180;
+const IS_TOUCH=(navigator.maxTouchPoints>0)||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+/* DOM write memoisation: skip identical writes so nothing reflows or churns */
+const _memo={};
+function setText(id,txt){if(_memo['t:'+id]===txt)return;_memo['t:'+id]=txt;document.getElementById(id).textContent=txt;}
+function setHTML(id,html){if(_memo['h:'+id]===html)return;_memo['h:'+id]=html;document.getElementById(id).innerHTML=html;}
+
+const SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const SG={Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
+const BODIES=['moon','mercury','venus','sun','mars','jupiter','saturn'];
+const PLANETS=['mercury','venus','mars','jupiter','saturn'];
+const AE={moon:'Moon',mercury:'Mercury',venus:'Venus',sun:'Sun',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn'};
+const PG={sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄'};
+const PN={sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn'};
+const RATIO={earth:1,moon:9/8,mercury:81/64,venus:4/3,sun:3/2,mars:27/16,jupiter:243/128,saturn:2};
+/* per-drone detune in cents: gives each voice its own colour without moving the scale */
+const DETUNE={moon:-2,mercury:3,venus:-1.5,sun:0,mars:2,jupiter:-3,saturn:1.5};
+const DET_F={};for(const b in DETUNE)DET_F[b]=Math.pow(2,DETUNE[b]/1200);
+const SCALES={pure:null,major:[0,2,4,5,7,9,11],minor:[0,2,3,5,7,8,10],dorian:[0,2,3,5,7,9,10],
+  lydian:[0,2,4,6,7,9,11],mixolydian:[0,2,4,5,7,9,10],pentatonic:[0,2,4,7,9],minorpent:[0,3,5,7,10]};
+const NOTE=['C','C♯','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
+const EPS_OBL=23.4392911;
+const FAST_MS=IS_TOUCH?420:240;      // longitudes + altitudes
+const SLOW_MS=2600;                   // retrograde, phase, sun distance
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✎ EDITABLE TEXT — BODY LORE (the tradition paragraph for each body)
+   ═══════════════════════════════════════════════════════════════════ */
+const LORE={
+  sun:`The heart of the old sky — the giver of day, season, and life itself. In the traditional picture the Sun is the king among the wanderers: vitality, purpose, the self that everything else arranges around. Its yearly road through the twelve signs is the calendar every culture has kept.`,
+  moon:`The swiftest light in heaven, and the closest. The ancients gave her memory, tide, body, and change — she crosses a whole sign in two and a half days while Saturn takes two and a half years. Her phase is the sky's one visible rhythm, the clock the whole living world keeps.`,
+  mercury:`The messenger — never straying far from the Sun, darting between morning and evening sky. Tradition gives Mercury speech, trade, roads, and cleverness. Thrice a year it seems to run backward, and the old astrologers held their letters and journeys until it turned.`,
+  venus:`The brightest wanderer — the morning and evening star, which the ancients first thought were two. Venus is love, beauty, and accord. Over eight years her meetings with the Sun trace a five-petalled rose around the zodiac, one of the quiet perfections of the sky.`,
+  mars:`The red one. War, drive, heat, and courage — the sky's iron. Mars moves boldly, but every two years it halts and runs backward through a long loop, burning brighter than almost anything else in the night as the Earth sweeps past it.`,
+  jupiter:`The greater benefic — the old sky's bringer of increase, fortune, and breadth. Jupiter strides one sign each year, so it marks the years of a life the way the Moon marks its days. To the eye it is serene, second only to Venus in brightness.`,
+  saturn:`The farthest light the old sky knew, and the slowest — time itself, limit, harvest, and the long lesson. Saturn takes twenty-nine years to come home to where it stood at your birth. In our ladder it sounds the octave: the far wall of the audible cosmos.`
+};
+/* ═══════════════════════════════════════════════════════════════════
+   ✎ EDITABLE TEXT — SIGN LORE  [element, modality, ruler, description]
+   ═══════════════════════════════════════════════════════════════════ */
+const SIGN_META={
+  Aries:['fire','cardinal','Mars','The ram — the year\u2019s ignition, where the Sun stands at the spring equinox. Headlong, first, unhesitating.'],
+  Taurus:['earth','fixed','Venus','The bull — the garden of the zodiac. Steadfast, sensual, slow to move and slower to stop.'],
+  Gemini:['air','mutable','Mercury','The twins — the crossroads and the conversation. Quick, doubled, curious.'],
+  Cancer:['water','cardinal','the Moon','The crab — the tide-line and the home. The Sun enters Cancer at midsummer\u2019s height.'],
+  Leo:['fire','fixed','the Sun','The lion — the Sun\u2019s own house, high summer. Radiance, courage, the sovereign heart.'],
+  Virgo:['earth','mutable','Mercury','The maiden with the wheat-sheaf — harvest, craft, discernment, the care of small things.'],
+  Libra:['air','cardinal','Venus','The scales — the only sign that is a made thing, not a creature. Balance, judgement, the autumn equinox.'],
+  Scorpio:['water','fixed','Mars','The scorpion — depth, intensity, the hidden and the transforming.'],
+  Sagittarius:['fire','mutable','Jupiter','The archer — the far horizon, the journey, the aimed question.'],
+  Capricorn:['earth','cardinal','Saturn','The sea-goat — the mountain climbed in winter. The Sun enters Capricorn at the solstice\u2019s longest night.'],
+  Aquarius:['air','fixed','Saturn','The water-bearer — the pattern-seer, the commons, the long view poured out.'],
+  Pisces:['water','mutable','Jupiter','The two fishes bound together — dissolution and dream, the zodiac\u2019s closing chord.']
+};
+
+/* ---------- state ---------- */
+let obs=null,skyTime=new Date(),rate=1,frozen=false;
+let lat=51.4779,lon=-0.0015,tz='UTC',placeLabel='';
+let rootBody='earth',rootPc=0,scaleKey='major';
+let sky=null,slowCache=null,flash={},ripples=[],hadRipples=false;
+let muted=new Set(),solos=new Set();
+let openInfo=null;
+
+/* ---------- places ---------- */
+function distKm(a,b,c,d){
+  const dLa=(c-a)*D,dLo=(d-b)*D;
+  const h=Math.sin(dLa/2)**2+Math.cos(a*D)*Math.cos(c*D)*Math.sin(dLo/2)**2;
+  return 12742*Math.asin(Math.sqrt(Math.min(1,h)));
+}
+let FLAT=[];
+(function flatten(){
+  for(const cont in PLACES)for(const ctry in PLACES[cont])
+    for(const [nm,la,lo,z] of PLACES[cont][ctry]) FLAT.push({nm,la,lo,z,ctry,cont});
+})();
+function nearestPlace(la,lo){
+  let best=null,bd=Infinity;
+  for(const p of FLAT){const d=distKm(la,lo,p.la,p.lo);if(d<bd){bd=d;best=p;}}
+  return {p:best,d:bd};
+}
+function zoneFromLon(lo){
+  const off=Math.round(lo/15);
+  if(off===0)return 'UTC';
+  return 'Etc/GMT'+(off>0?'-':'+')+Math.abs(off);
+}
+function offsetHours(zone,date){
+  try{return tzOffsetMs(date||new Date(),zone)/3600000;}catch(_){return lon/15;}
+}
+function resolvePlace(){
+  const {p,d}=nearestPlace(lat,lon);
+  if(d<60){placeLabel=p.nm+', '+p.ctry;return {tz:p.z,exact:true};}
+  // a nearby city may still sit in a wrong zone (huge countries, sparse coverage):
+  // only adopt it if its offset is within 90 min of what this longitude implies
+  const implied=lon/15;
+  if(d<1400&&Math.abs(offsetHours(p.z)-implied)<1.5){
+    placeLabel='near '+p.nm+', '+p.ctry+' · '+Math.round(d)+' km';
+    return {tz:p.z,exact:false};
+  }
+  placeLabel='Custom location';
+  return {tz:zoneFromLon(lon),exact:false};
+}
+function buildAccordion(){
+  const acc=document.getElementById('placeAcc');
+  let h='';
+  for(const cont in PLACES){
+    h+=`<details><summary>${cont}</summary>`;
+    for(const ctry in PLACES[cont]){
+      h+=`<details class="lvl2"><summary>${ctry}</summary><div class="cities">`;
+      for(const [nm,la,lo,z] of PLACES[cont][ctry])
+        h+=`<button data-la="${la}" data-lo="${lo}" data-tz="${z}" data-nm="${nm}" data-ct="${ctry}">${nm}</button>`;
+      h+=`</div></details>`;
+    }
+    h+=`</details>`;
+  }
+  acc.innerHTML=h;
+  acc.querySelectorAll('button[data-la]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      lat=+b.dataset.la;lon=+b.dataset.lo;tz=b.dataset.tz;
+      placeLabel=b.dataset.nm+', '+b.dataset.ct;
+      document.getElementById('lat').value=lat.toFixed(2);
+      document.getElementById('lon').value=lon.toFixed(2);
+      setTzSelect(tz);
+      placeMarker();rebuildObserver();syncFromInputs();recompute(true);
+      updatePlaceLabel();
+    });
+  });
+}
+function updatePlaceLabel(){
+  document.getElementById('placeCur').innerHTML=
+    `${placeLabel||'—'} <span>· ${tz} · ${Math.abs(lat).toFixed(2)}°${lat>=0?'N':'S'} ${Math.abs(lon).toFixed(2)}°${lon>=0?'E':'W'}</span>`;
+  document.getElementById('placehint').innerHTML=
+    `<b>${Math.abs(lat).toFixed(2)}° ${lat>=0?'N':'S'}, ${Math.abs(lon).toFixed(2)}° ${lon>=0?'E':'W'}</b> — ${placeLabel||'—'}`;
+}
+
+/* ---------- time ---------- */
+function tzOffsetMs(date,zone){
+  const f=new Intl.DateTimeFormat('en-US',{timeZone:zone,hour12:false,year:'numeric',month:'2-digit',
+    day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const p={};for(const{type,value}of f.formatToParts(date))p[type]=value;
+  let h=parseInt(p.hour);if(h===24)h=0;
+  return Date.UTC(+p.year,+p.month-1,+p.day,h,+p.minute,+p.second)-date.getTime();
+}
+function wallToInstant(y,mo,d,h,mi,zone){
+  const naive=Date.UTC(y,mo-1,d,h,mi);let t=naive;
+  for(let i=0;i<3;i++)t=naive-tzOffsetMs(new Date(t),zone);
+  return new Date(t);
+}
+function safeFmt(date,zone,opts){
+  try{return new Intl.DateTimeFormat('en-GB',{timeZone:zone,...opts}).format(date);}
+  catch(_){return new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',...opts}).format(date);}
+}
+const fmtT=(d,z,sec)=>safeFmt(d,z,{hour:'2-digit',minute:'2-digit',...(sec?{second:'2-digit'}:{}),hour12:false});
+const fmtD=(d,z)=>safeFmt(d,z,{day:'numeric',month:'long',year:'numeric'});
+
+/* ---------- astronomy ---------- */
+function eclipticLon(b,date){
+  if(b==='moon')return rev(Astronomy.EclipticGeoMoon(date).lon);
+  return rev(Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[AE[b]],date,true)).elon);
+}
+function altOf(b,date){
+  const eq=Astronomy.Equator(Astronomy.Body[AE[b]],date,obs,true,true);
+  return Astronomy.Horizon(date,obs,eq.ra,eq.dec,'normal').altitude;
+}
+function ascOf(date){
+  const gst=Astronomy.SiderealTime(date);
+  const ramc=rev((gst+lon/15)*15),e=EPS_OBL,la=clamp(lat,-89.9,89.9);
+  /* POLAR FIX: above the polar circles the true ascendant oscillates and can
+     flip 180 deg, so the rising line never completes its turn. Blend the
+     latitude term smoothly toward zero (the East Point) between 64 and 80 deg;
+     the effective latitude then never exceeds ~66 deg, which guarantees the
+     line keeps turning, monotonically, at any latitude on Earth. */
+  const t=sstep(Math.abs(la),64,80);
+  const latTerm=Math.tan(la*D)*(1-t);
+  return rev(Math.atan2(Math.cos(ramc*D),-(Math.sin(ramc*D)*Math.cos(e*D)+latTerm*Math.sin(e*D)))*R);
+}
+const signOf=L=>{const l=rev(L);return{name:SIGNS[Math.floor(l/30)],deg:l%30,idx:Math.floor(l/30)};};
+
+function computeSlow(date){
+  const retro={};
+  for(const p of PLANETS){
+    const d1=new Date(date.getTime()-43200000),d2=new Date(date.getTime()+43200000);
+    retro[p]=(((eclipticLon(p,d2)-eclipticLon(p,d1)+540)%360)-180)<0;
+  }
+  return {retro,
+    ill:Astronomy.Illumination(Astronomy.Body.Moon,date).phase_fraction,
+    waxing:Astronomy.MoonPhase(date)<180,
+    sunDist:Astronomy.Illumination(Astronomy.Body.Sun,date).helio_dist,
+    at:date.getTime()};
+}
+function snapshot(date,forceSlow){
+  if(forceSlow||!slowCache||Math.abs(date.getTime()-slowCache.at)>6*3600000) slowCache=computeSlow(date);
+  const asc=ascOf(date),ascSign=Math.floor(rev(asc)/30);
+  const lonm={},alt={},house={};
+  for(const b of BODIES){
+    lonm[b]=eclipticLon(b,date);alt[b]=altOf(b,date);
+    house[b]=((Math.floor(rev(lonm[b])/30)-ascSign)+12)%12+1;
+  }
+  const solar=(Astronomy.HourAngle(Astronomy.Body.Sun,date,obs)+12)%24;
+  return {date,asc,ascSign,lon:lonm,alt,house,solar,
+    retro:slowCache.retro,ill:slowCache.ill,waxing:slowCache.waxing,sunDist:slowCache.sunDist};
+}
+function phaseName(ill,wax){
+  if(ill<.03)return'New Moon';if(ill>.97)return'Full Moon';
+  if(ill>.46&&ill<.54)return wax?'First Quarter':'Last Quarter';
+  if(wax)return ill<.5?'Waxing Crescent':'Waxing Gibbous';
+  return ill<.5?'Waning Crescent':'Waning Gibbous';
+}
+function eotMinutes(s){
+  const utcH=s.date.getUTCHours()+s.date.getUTCMinutes()/60+s.date.getUTCSeconds()/3600;
+  const mean=(utcH+lon/15+24)%24;
+  let d=s.solar-mean;if(d>12)d-=24;if(d<-12)d+=24;
+  return d*60;
+}
+
+/* ---------- tuning ---------- */
+const rootHz=()=>440*Math.pow(2,(48+rootPc-69)/12);
+function quant(f){
+  const sc=SCALES[scaleKey];if(!sc)return f;
+  const m=69+12*Math.log2(f/440);let best=null,bd=1e9;
+  for(let o=-1;o<=1;o++)for(const pc of sc){
+    const abs=rootPc+pc,bo=Math.round((m-abs)/12),cm=abs+12*(bo+o),d=Math.abs(cm-m);
+    if(d<bd){bd=d;best=cm;}}
+  return 440*Math.pow(2,(best-69)/12);
+}
+const R_MIN=.9833,R_MAX=1.0167;
+function freqOf(b,snap){
+  let ratio=RATIO[b]/RATIO[rootBody];
+  if(b==='sun'&&snap){
+    const t=clamp((snap.sunDist-R_MIN)/(R_MAX-R_MIN),0,1);
+    ratio*=Math.pow(9/8,0.5-t);}
+  return quant(rootHz()*ratio);
+}
+const noteName=f=>{const m=Math.round(69+12*Math.log2(f/440));return NOTE[((m%12)+12)%12]+(Math.floor(m/12)-1);};
+
+/* ---------- mix ---------- */
+function audible(b){
+  if(solos.size>0)return solos.has(b)&&!muted.has(b);
+  return !muted.has(b);
+}
+function applyMix(){
+  if(sounding&&sky)for(const b of BODIES)
+    ramp(dgain[b].gain,audible(b)?(0.03+0.32*sstep(sky.alt[b],-18,55)):0.0001,.4,'g'+b,0.004);
+  document.getElementById('listenAll').classList.toggle('show',muted.size>0||solos.size>0);
+}
+
+/* ---------- map ---------- */
+const MAPW=720,MAPH=360,NS='http://www.w3.org/2000/svg';
+const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const mapEl=document.getElementById('map');
+let marker,markerRing;
+(function buildMap(){
+  mapEl.appendChild(mk('rect',{x:0,y:0,width:MAPW,height:MAPH,fill:'var(--sea)'}));
+  for(let g=-150;g<=150;g+=30)mapEl.appendChild(mk('line',{x1:(g+180)/360*MAPW,y1:0,x2:(g+180)/360*MAPW,y2:MAPH,stroke:'#2a2450','stroke-width':.5}));
+  for(let g=-60;g<=60;g+=30)mapEl.appendChild(mk('line',{x1:0,y1:(90-g)/180*MAPH,x2:MAPW,y2:(90-g)/180*MAPH,stroke:'#2a2450','stroke-width':.5}));
+  mapEl.appendChild(mk('line',{x1:0,y1:MAPH/2,x2:MAPW,y2:MAPH/2,stroke:'#4a4078','stroke-width':.8}));
+  mapEl.appendChild(mk('path',{d:'M240.9 340.1L239.7 342L228.5 341.2L236.2 340.8L238.8 339.3ZM41.6 339L37.7 339.3L32.6 337.2L37.5 336.8L41 338.1ZM269.7 336.1L272.2 337L273.3 340.1L254.3 341.9L251.7 341.3L252 340.4L258 339.2L262.7 336.1L266.7 335.7ZM117.6 327L122.6 327L116.8 328L115.2 326.6ZM162 323.9L166.4 323.9L167.6 325L158.4 325L155.3 323.8L159.1 323.7ZM223.1 321.9L222.4 324.3L210.1 324.1L212.2 322.5L215.9 322.4L217.7 318.1L219.5 317.8L222.5 321ZM0 349.4L1.9 348.3L11.2 349.1L20.1 347.8L43.9 350.7L62.9 351.2L73.8 350.1L74.2 349.1L52.8 347.4L54.3 344.1L46.3 342.2L58.7 342.7L67.2 340.7L60.9 338.7L49.3 338.1L43.9 336.1L43.3 333.8L57.3 334.8L67.8 333L67.6 330.8L70.2 330.4L89.6 328.6L120.6 329L132.1 327.4L135.4 329.4L158.7 330.6L159.8 329.7L154.9 328.2L152.6 325.2L167.3 327.2L179.8 326.6L181.5 325.1L189.6 327L197.1 327.7L199.4 326.3L207.6 327.9L222.1 326L225.7 324.1L222.9 319.4L225.5 313.8L234 309.3L244.4 306.5L245.6 307.1L244.8 307.7L236 309.6L234.7 311L235.8 312.4L232.5 313L228.7 315.9L233.6 318.5L236.4 321.4L238.3 327.4L231.3 330.5L218.8 333.3L205.5 333.4L212.7 335.8L204.2 336.8L203.9 338.4L209.3 340.5L240.6 344.8L243.6 346.4L260.5 343.5L274.4 344.2L278.5 342.7L302.9 340.7L300.6 338.5L288.7 338.9L289.3 336.2L325 330.3L328.6 329L329.2 328.2L327.1 327.7L329.1 326.3L339.4 322.5L345.2 323.4L346.3 321.9L359.5 323.3L375.5 319.8L379 320L381.6 321.7L386.8 319.9L414.2 320.9L424 319.3L427.7 317L437.3 319.6L469.1 311.6L482.9 315.9L488.1 314.8L497.8 315.9L499.3 318.5L495.6 320.6L498.1 321.4L495.9 323.7L499.7 324.5L502 324.2L507.7 319.8L515.3 318.9L518.2 316.7L525.6 314.4L533.5 314.3L536 312.4L539.3 314.3L551.6 314.8L559.4 314.5L565.7 311.1L572.4 313.9L587.2 311.8L599.7 314.5L606.4 313L617.6 313.5L629.5 312.4L630.1 310.6L634.9 313.9L651 313.8L653.3 315.8L657.7 316.8L668.6 317.1L683.1 321.2L694.6 321.7L702.4 323.4L698.6 327.3L692.2 328.8L687.1 332.5L687 334.1L689.5 336.4L694 337.5L683.5 338.3L679.6 341.9L698.8 347.7L716.6 348.9L716.6 360L0 360ZM224.5 287.7L229.9 289.4L229 290.4L226.1 289.8L221.5 291L215.5 289L210.7 285.7L217.8 288.1L221.3 285L223.5 286.2ZM242.9 282.2L244.5 283.1L243.9 283.8L238.6 284.6L237.6 283.7L241.7 283ZM500.6 279.4L497.5 279.5L497.9 277.2L501.1 278.5ZM650.8 261.6L656.6 261.7L655.8 266.4L652.1 267.1L649.5 261.4ZM706 261.8L708.5 262.7L705.4 266.7L706.2 267.7L702.9 268.5L701.2 271.8L698.7 273.3L693.4 272.4L694.1 270.2L701 266.1L705.6 261ZM709.2 252.3L713.5 255.8L717 255.4L715.9 258.3L714.4 258.3L710.5 263.4L709.3 262.6L710.5 260.9L709.8 259.8L707.6 259L709.1 257.6L709.4 254.8L705.3 249.1L708.7 250.5ZM694.2 224.3L689.7 222.3L688.9 220.2L693.2 223.4ZM716.7 214.7L717.1 216.3L714.8 216.3L716.2 215ZM460.1 207.1L460.8 211.4L459.3 211.4L459.6 213.7L454.2 229.9L450.8 231.2L447.5 228.9L446.5 224.1L448.8 220.1L447.9 214.8L448.9 212.4L452.6 211.6L455.4 209.2L458.4 204.1L459.6 205.8ZM647.1 207.5L647.8 209.1L649.1 208.3L650.7 210L652.8 217.9L657.7 220.8L659.4 224.7L661.5 224.8L661.8 226.9L665.7 230.5L667.1 236.2L665.8 243.3L662 248.6L660 254.9L652.6 258.1L649.8 256.8L650.1 255.8L647.2 257.6L641.3 256L639.2 252.3L636.2 251.2L636.4 248.8L633.7 250.5L635.6 245.8L632 249.8L628.5 245.2L622.7 243L612.3 244.4L608.4 245.9L607.3 247.8L599.8 248L596.1 250.1L593.2 250.1L590.1 248.4L591.6 244.4L586.7 232.2L587.6 233.1L586.9 231.2L588.5 232.6L586.8 228.8L588.3 223.5L588.4 225L593.4 221.4L601.7 219.4L606 212.8L606.9 214.5L607.7 214.1L607 213.2L611.4 208.5L614.1 207.6L616.7 209.7L619.2 209.9L618.8 208.8L621.2 205.1L625.2 204.2L623.6 202.5L630.6 204.5L633 203.7L633.9 204.7L631.9 206.6L631 210L640.4 215.4L641.7 214.7L643.4 210.1L644.3 202.1L645 201.3L647.2 206.8ZM608.9 200.3L606.9 200.5L608 198.6L614.7 196.8L610.2 198.8ZM595.8 196.2L598.3 197.4L593.5 198.1L595.3 196.9ZM605.8 196.2L605.5 197.3L602.5 197.9L599.8 196.9L604 196.9ZM577.2 193.6L581.5 192.9L591.4 196.7L589.1 197.5L572.9 194.7L570.7 193.7L572.1 191.8L577 192.8ZM664 191L659.4 192.6L656.8 190.9L659.7 191L660.3 190L661.6 190.9L663.1 188.3L664.7 188.6L664.6 189.7ZM620.9 186.2L621.7 187.7L615.8 186.8L616.3 185.7L618.7 185.6ZM628.3 182.3L628.8 185.5L630.9 186.7L632.6 184.6L636.7 183.4L649.2 187.7L652 190.9L655.3 192.2L655.8 193.2L653.9 193.4L654.4 194.8L657.5 198.2L661.6 200.6L660.1 201.3L655.8 200.3L652.1 196.1L649.5 195.3L646.6 196.5L646.8 198L645.3 198.7L638.3 196.2L635.2 196.8L637.3 194.6L635.9 190.8L627.3 187.1L626 188.2L624 185.6L627.4 184.4L624.5 184.4L621 181.9L624.8 180.7L628 181.6ZM610.5 177.2L607.4 179.5L600.4 179.5L600.1 181L601.9 182.8L606.7 181.2L603 183.8L606.3 190.7L604.5 190.6L605.4 188.9L603 189.1L601.9 185.3L600.6 185.9L600.9 191.1L598.7 190.8L599 187L597.5 185.6L600.1 178.9L601.8 177.4L608.2 178.2L610.1 176.7ZM617.4 177.7L616.2 181.8L614.8 178L615.9 175.7L617.2 176.9ZM571.6 191.7L569.4 191.7L565.2 188.4L557.2 176.4L550.6 169L555 169.5L561.3 175.8L565 177.2L567.7 179.8L566.9 181.4L572.2 186.1L571.7 188.6ZM595.7 176.3L598 178.2L595.6 178.4L595 181.6L593.1 183L592.3 188L589.7 188.2L586.5 186.2L584.1 187L580.4 185.9L580.1 183.2L578.2 180.9L578.1 177.3L586 173.8L593.5 166.2L598.4 169.2L594.6 173.5L596.1 175.4ZM612.8 163.2L613.1 165.6L612.4 167.5L611.7 165.4L610.7 166.4L610.8 168.8L608.4 167.7L608.5 165.3L607.2 164.3L603.8 165.6L607 162.6L607.7 163.5L610.9 162L610.8 160.5L612.6 162.4ZM522.4 167.6L520.7 168.1L519.7 166.5L520.3 160.4L523.6 165L523.3 167ZM608 159.4L606 162L604.8 160.6L605.9 158.2L607 158.1L606.7 159.5L608.2 157.5ZM597 161.4L594.4 163.3L595.3 161.9L599 157.3L599.4 158.9L598.1 160ZM603.8 156.2L606.2 156.8L604 159.1L604.1 157.2ZM611 155.7L611.6 157.9L610 157.4L610.6 159.3L609.6 159.7L608.6 157L609.8 156.4L608.5 154.9L610.5 154.9ZM603.1 153.9L602.5 155.6L600.6 153.1L602.4 153.1ZM602.6 143L604.5 143L605 145.8L603.3 148.1L603.5 151.3L607.9 152.4L608.2 154.9L605.9 152.9L601.3 152.3L602 150.9L600.1 150.1L599.8 147.3L600.6 147.9L601.4 143ZM228.8 143.5L225.6 144.1L225.8 143L228.5 143.1ZM206.2 144.3L203.3 143.5L204.4 143L207.6 144.2ZM214.8 140.3L220.1 140.7L223.4 142.8L218.7 143.1L217.2 144.8L211.1 143.3L215.3 142.7L213.6 140.2ZM580.7 142.6L577.3 143L577.3 141.3L581.6 139.8L581.1 141.5ZM48.9 141.8L48.3 139.5L50.4 141L49.6 141.5ZM200.6 134.5L211.6 139.4L210.1 140.2L204.5 140.3L205.8 139.2L202.6 136.8L196.4 135.6L196.4 134.7L190.1 136.2L193.5 134L198.8 133.8ZM602.4 134.4L601.5 136.1L600.2 132.9L603 129.4L603.6 131.2ZM629.3 111.7L628.4 113.6L627.6 113L626 114.6L624.7 113.1L627.8 111.3ZM429.2 108.7L426 110.9L424.5 109.8L427.3 109.3ZM391 103.5L390.2 106.8L384.9 104.8L385.1 103.7L389.5 103.7ZM378.4 97.6L379.6 99L379.3 101.6L376.9 101.7L376.3 98.1L377.4 98.2ZM642 105.7L640.5 109.7L634.4 110.8L631.6 113.1L630.2 110.8L622 112.2L624 113.7L621.4 117.9L620.4 117.2L620.9 115.4L618.8 113.4L625.2 109.1L631.4 108.9L633.4 105.4L634.8 106.3L638.9 103.6L640.6 97.6L642.7 97.2L643.8 100L641.9 103.7ZM379.1 95.7L378.5 97.2L377.1 95.5L378.8 94ZM647.8 91.7L650.6 91.2L651.1 93.5L648.1 94L646.4 96L643.2 94.6L642.1 96.8L639.9 96.9L639.6 94.9L640.6 93.3L642.8 93.2L643.9 88.9L646.3 91ZM232.7 86.9L236 87.1L234.3 88.1L231.7 87.2L232 85.9ZM113 83L103.9 80L103.3 78.5L108.5 79.4L112.2 81.9ZM247.7 78.6L246.4 80.4L247.7 79.7L249.1 80.1L248.4 80.8L253 81.5L252.4 83L253.8 82.6L254.7 84.9L253.9 86.7L251.6 86.4L251.5 84.5L249.2 86.2L248 86.2L249.4 85.2L247.5 84.7L241.5 84.8L242.4 83.5L241.5 83L245.3 78.6L248.8 77.4ZM94.6 71.9L96.5 71.8L95.9 74L96.8 75.6L93.6 71.7ZM647.3 78.5L649.3 82L646.4 81.4L645.1 84.3L647 87.7L645.5 86.5L644.2 88.1L643.4 73.4L645.3 71.3L646.5 76.5ZM346.4 75.5L340 76.4L341.7 74.3L340.6 72.2L346.5 69.7L348.7 70.9L347.9 73.7ZM385.4 68.8L384.2 70.4L382.1 69.3L381.8 68.4L384.7 67.8ZM54 65.8L52 66.5L50.7 65.1L53.5 64.1L55.7 64.8ZM354 62.7L351.9 64.9L356.1 64.6L353.8 68.1L355.8 68.2L360.9 74.1L363.4 74.5L362.1 76.4L362.9 77.4L349.5 80.1L348.4 79.7L353.2 77.1L349.5 76L351.6 75.4L350.8 73L353.8 73.2L354.1 72L350.3 70.4L349.9 68.4L348.8 69.4L347.7 66.4L350 62.7L351.6 62.9ZM196.2 54.6L193.9 55.7L192 55.1L196.2 54.2ZM189.7 48.7L199.8 52.5L198 53.2L193.8 51.8L189 53.9L188.3 52.7L185.6 52.9L187.3 51.9L188.2 48.5ZM331 47.1L330.5 48.4L332.8 49.7L322.7 53L314.5 52.1L316.4 51.2L312.1 50.2L315.5 49.2L311.3 48.8L312.7 47.5L315.7 47.2L318.8 48.5L327.7 46.9ZM208.3 45.7L206 45.8L206.4 43.7L209.8 44L209.6 45.1ZM0 42.1L10.1 45.6L10 46.8L11.3 47.3L10.9 45.9L16.3 46.2L20.2 48L14.9 49.1L14.1 51.5L7.6 49.3L3.3 49.2L2.6 47.8L0.2 48.3L1.1 49.2L0 50.1L-5.2 50.8L-1.3 54L-1.5 55.4L-5.3 55L-12.6 56.7L-19.3 60.2L-22.2 58.9L-27.4 60.4L-32.9 60.3L-36 63.5L-33.6 64.8L-33.9 67.7L-35.7 67.8L-36.6 69.4L-35.8 70.3L-39.3 71.3L-40 73.6L-42.9 74.1L-43.5 76.1L-46.4 78L-49.1 69.2L-48.2 66.5L-46.4 64.3L-43.3 63.9L-32.7 57.7L-31.1 54.9L-33.5 55.1L-39.8 58.9L-41.4 56.5L-46.6 57.1L-51.6 60.5L-49.9 61.7L-57.5 62.4L-57.3 61L-60.4 60.7L-75.6 61.9L-89.7 70.5L-83.7 72.5L-80.2 71.6L-77.3 73.8L-77.2 75.5L-78.8 77.5L-79.9 83.1L-83.6 87.4L-90.3 93.2L-92.9 94.4L-95.4 93.4L-104.9 100.5L-105.2 101.6L-101.1 106.4L-101.8 109.8L-107 111.2L-107.8 106.5L-106.3 106.2L-107.6 104.5L-110.6 103.8L-109.4 100.9L-111.5 100.1L-117.9 102.2L-115.7 99.2L-116.7 98.1L-123.9 101.6L-124.9 102.5L-122.2 105.1L-120.6 105.7L-118.4 104.3L-115.3 105.1L-115 106.1L-117.8 106.7L-121.7 110.2L-119.5 111.3L-116.2 116.6L-117.5 118.6L-115.8 120.3L-116.6 123.5L-122.7 130.9L-128.2 134.4L-138.4 137.2L-139.1 139.3L-140.2 139.4L-140.3 137.2L-143 136.6L-148.2 140.5L-148.7 141.9L-142.2 149.4L-141.3 153.1L-141.6 156.7L-149.7 162.8L-149.8 160.2L-153 158.7L-154.8 155.6L-158.3 154.7L-158 153.2L-159.8 153.2L-161.6 161.5L-160.3 161.6L-159.1 165.1L-154.1 168.9L-151.5 177.4L-157.2 174.5L-159.8 167.1L-163 163.2L-163.3 164.4L-162.5 157.1L-165.7 146.1L-169.3 148.6L-171.6 147.9L-171.3 143.6L-177.2 134.5L-179 134.4L-179.5 136.3L-186 137L-187 139.7L-189.9 141L-195.6 146.9L-199.3 148.2L-200.3 159.3L-204.9 164.1L-206.8 162.2L-212.9 148L-214.7 137.3L-219.1 138.2L-221.7 135.8L-221.3 134.3L-225.1 132.1L-227.3 129.2L-237 129.8L-245.2 128.5L-247 125.7L-250.6 127L-257 124.3L-259.8 119.7L-264 120L-258.4 130.5L-258 128L-256.8 128.4L-256.4 132L-252 131.8L-247.3 127.2L-246.3 131.5L-242.5 132.9L-240.4 135.4L-244.3 139.5L-244.6 142.1L-249.5 145.5L-255.2 147.2L-255.7 148.8L-262.6 152L-273 154.7L-274.7 146.4L-281.7 137.4L-283 132.6L-290.7 123.9L-290.2 121L-292.2 124.7L-295.2 120.3L-288.6 132.1L-288.9 133.8L-286.3 136L-285 142.8L-283.2 144L-281.5 148.2L-273.4 155.2L-274.6 156.5L-270.8 159.1L-257.8 156L-257.9 158.7L-264.5 171.6L-279.5 185.1L-281.6 189.4L-282.4 193L-281.1 193.7L-281.6 197L-279 201.5L-278.4 209.4L-281.1 213.4L-290.4 219.6L-288.9 224.2L-289.1 228.2L-294.9 231.5L-295.6 237.5L-303.6 245.5L-308.4 247.9L-314.9 247.7L-320.8 249.6L-323.5 247.7L-323.6 243.3L-329.6 234.2L-331.5 224.2L-336.4 216.1L-336.4 211.6L-332.7 204.1L-332.6 201.5L-336.2 190.1L-342.4 182.2L-340.4 173.9L-341.2 172.5L-343 170.5L-348.2 171.5L-351.3 167.5L-356.3 167.7L-363.9 170.6L-369.3 169.7L-375 171.3L-378 170.3L-384.9 165.5L-389.7 158.2L-393.2 155.7L-393.4 152.8L-395.2 150.5L-392.9 147.7L-392.3 143.8L-393.9 136.2L-388.9 127.5L-379.1 120.1L-378.6 114.9L-373.8 111.8L-371.9 108.5L-364.3 109.7L-357.1 106.8L-341 105.3L-339.6 106.6L-337.8 106.2L-339.3 112.4L-329.5 115.5L-328.6 117.2L-321.8 119.5L-319.9 118L-319.7 115.5L-316.9 114.3L-302.2 118.3L-298 116.9L-296.1 118.1L-292.5 118.1L-288 110.7L-287.7 106.7L-295 107.8L-296.6 106.7L-300.6 107.7L-304.7 106.7L-307.4 103.6L-306.4 102L-307.7 101.1L-305.4 99.2L-302.4 99.1L-301.5 97.6L-297.7 97.8L-293 96L-283.3 98.1L-279.3 98L-276.6 96.1L-277.1 94.7L-286.6 89.5L-283.5 87.5L-284.7 86.7L-281.8 85.5L-290.1 87.5L-290 88.7L-286.9 89.1L-287.3 89.8L-292.2 91.3L-295.1 89.3L-293.4 87.8L-298.5 86.8L-300.7 89.9L-302.3 90.2L-304.6 94.8L-302.4 97.9L-307.3 99.7L-307.9 98.4L-310.2 98.1L-312.6 98.6L-311.2 99.8L-312.2 100.1L-314.7 99.5L-311.9 104.7L-313.8 104.2L-313.7 107.2L-315 107.2L-321.2 99.5L-320.9 96.6L-333.7 88.5L-335.3 89.2L-334.8 91.8L-323 99.7L-326.3 99.1L-327.1 100.4L-325.9 102.2L-327.8 104L-328.6 104.2L-327.8 102.1L-329.2 99.9L-335.8 96.6L-339 94.1L-339.6 92.2L-342.2 91.3L-346.9 93.7L-353.8 93.9L-353.9 96.2L-358.4 98L-360.6 101.4L-359.8 102.5L-364.3 106.7L-368.7 106.6L-370.8 108.1L-373 106.1L-377.8 106.3L-377.7 103.5L-379.1 102.5L-377.5 98.5L-378.8 93.9L-376 92.5L-363.8 93.2L-362.8 92L-362.4 88L-365.9 84.9L-369 84.1L-369.2 82.6L-363.2 82.7L-363.9 80.4L-362 81.3L-357.3 79.7L-356.7 78.1L-352.3 76.8L-350.6 73.8L-343.8 72.9L-342.4 72L-343.8 69L-342.9 65.8L-338.8 64.5L-339.5 66.2L-338.2 67.1L-340.7 69.1L-338.1 72L-335 71.1L-331.8 72.5L-324.8 70.3L-320.7 71.1L-317.5 69.6L-316.8 65.2L-315 64.5L-311.8 65.9L-311.1 63.2L-313.1 62.8L-313.3 61.6L-301.8 59.9L-303.9 59L-314.3 60.3L-317.4 58.6L-317.9 54.8L-316.9 53.6L-309.2 49.8L-312.2 48L-315.6 48.6L-317.6 49.9L-317.3 51.2L-324.3 54.5L-325.8 57.3L-322.4 59.8L-324.3 62.1L-326.3 62.6L-328.2 67.8L-334.1 69.3L-339.3 61.1L-343.2 63.4L-348.7 62.8L-350 56.1L-348.2 54.8L-338.9 51L-330.5 44.4L-321.6 40.4L-314 39.6L-310.9 37.9L-303.7 37.6L-297.4 39.1L-300 39.6L-297.8 40.9L-295.7 40.2L-279.4 44.1L-277.7 46.4L-280 47.5L-293.6 46.7L-290.4 48.2L-290.1 51.2L-286 52.3L-287 50.4L-285.6 49.7L-280.8 51L-279.1 50.5L-280.5 49L-275.8 47L-272.1 47.9L-270.9 46.5L-272.6 45.3L-271.6 44.1L-273.1 42.9L-267.5 43.5L-266.4 44.6L-268.9 44.9L-268.9 46L-267.3 46.7L-252.6 42.3L-251.1 42.4L-253 43.6L-242.4 42.2L-240.1 43.4L-237.8 42.1L-239.9 41L-238.9 40.3L-223 43.8L-221.6 42.8L-226.1 41.1L-226.6 37.9L-221.6 34.3L-214.8 34.4L-214.4 35.6L-216.3 37.2L-214.4 39.2L-214.9 42L-212.7 43.2L-217.4 47.4L-215.2 47.7L-209.9 44.5L-211.1 43.3L-210.1 42L-212.8 40.7L-211.2 38.7L-213.8 37.1L-210.2 35.8L-210.7 34.3L-208.6 35.4L-209.4 37.3L-207.3 37.7L-208.2 36.3L-204.8 35.5L-197 36.5L-198.8 34.8L-199 32.7L-186.4 32.1L-188 31.1L-185.7 29.8L-158.5 27.1L-151.3 24.6L-145.5 27L-137.8 26.6L-131.7 28.3L-132.2 29.3L-141.2 31.6L-134 32L-132.9 33.3L-128.9 32.5L-113.6 34.1L-113.5 32.5L-106 32.9L-102.8 33.9L-101.9 35.2L-103.1 36L-97.4 38.4L-95.5 36.3L-80.3 37L-81.7 35.2L-79.1 34.3L-61 35.6L-54.1 38.3L-42 38.3L-40.3 39.1L-40.6 40.6L-38.1 41.1L-24.3 40.8L-20.8 42.6L-18.4 42L-20 40.7L-19.1 39.8L-2.8 41.2ZM720 42.1L730.1 45.6L730 46.8L731.3 47.3L730.9 45.9L736.3 46.2L740.2 48L734.9 49.1L734.1 51.5L727.6 49.3L723.3 49.2L722.6 47.8L720.2 48.3L721.1 49.2L720 50.1L714.8 50.8L718.7 54L718.5 55.4L714.7 55L707.4 56.7L700.7 60.2L697.8 58.9L692.6 60.4L687.1 60.3L684 63.5L686.4 64.8L686.1 67.7L684.3 67.8L683.4 69.4L684.2 70.3L680.7 71.3L680 73.6L677.1 74.1L676.5 76.1L673.6 78L670.9 69.2L671.8 66.5L673.6 64.3L676.7 63.9L687.3 57.7L688.9 54.9L686.5 55.1L680.2 58.9L678.6 56.5L673.4 57.1L668.4 60.5L670.1 61.7L662.5 62.4L662.7 61L659.6 60.7L644.4 61.9L630.3 70.5L636.3 72.5L639.8 71.6L642.7 73.8L642.8 75.5L641.2 77.5L640.1 83.1L636.4 87.4L629.7 93.2L627.1 94.4L624.6 93.4L615.1 100.5L614.8 101.6L618.9 106.4L618.2 109.8L613 111.2L612.2 106.5L613.7 106.2L612.4 104.5L609.4 103.8L610.6 100.9L608.5 100.1L602.1 102.2L604.3 99.2L603.3 98.1L596.1 101.6L595.1 102.5L597.8 105.1L599.4 105.7L601.6 104.3L604.7 105.1L605 106.1L602.2 106.7L598.3 110.2L600.5 111.3L603.8 116.6L602.5 118.6L604.2 120.3L603.4 123.5L597.3 130.9L591.8 134.4L581.6 137.2L580.9 139.3L579.8 139.4L579.7 137.2L577 136.6L571.8 140.5L571.3 141.9L577.8 149.4L578.7 153.1L578.4 156.7L570.3 162.8L570.2 160.2L567 158.7L565.2 155.6L561.7 154.7L562 153.2L560.2 153.2L558.4 161.5L559.7 161.6L560.9 165.1L565.9 168.9L568.5 177.4L562.8 174.5L560.2 167.1L557 163.2L556.7 164.4L557.5 157.1L554.3 146.1L550.7 148.6L548.4 147.9L548.7 143.6L542.8 134.5L541 134.4L540.5 136.3L534 137L533 139.7L530.1 141L524.4 146.9L520.7 148.2L519.7 159.3L515.1 164.1L513.2 162.2L507.1 148L505.3 137.3L500.9 138.2L498.3 135.8L498.7 134.3L494.9 132.1L492.7 129.2L483 129.8L474.8 128.5L473 125.7L469.4 127L463 124.3L460.2 119.7L456 120L461.6 130.5L462 128L463.2 128.4L463.6 132L468 131.8L472.7 127.2L473.7 131.5L477.5 132.9L479.6 135.4L475.7 139.5L475.4 142.1L470.5 145.5L464.8 147.2L464.3 148.8L457.4 152L447 154.7L445.3 146.4L438.3 137.4L437 132.6L429.3 123.9L429.8 121L427.8 124.7L424.8 120.3L431.4 132.1L431.1 133.8L433.7 136L435 142.8L436.8 144L438.5 148.2L446.6 155.2L445.4 156.5L449.2 159.1L462.2 156L462.1 158.7L455.5 171.6L440.5 185.1L438.4 189.4L437.6 193L438.9 193.7L438.4 197L441 201.5L441.6 209.4L438.9 213.4L429.6 219.6L431.1 224.2L430.9 228.2L425.1 231.5L424.4 237.5L416.4 245.5L411.6 247.9L405.1 247.7L399.2 249.6L396.5 247.7L396.4 243.3L390.4 234.2L388.5 224.2L383.6 216.1L383.6 211.6L387.3 204.1L387.4 201.5L383.8 190.1L377.6 182.2L379.6 173.9L378.8 172.5L377 170.5L371.8 171.5L368.7 167.5L363.7 167.7L356.1 170.6L350.7 169.7L345 171.3L342 170.3L335.1 165.5L330.3 158.2L326.8 155.7L326.6 152.8L324.8 150.5L327.1 147.7L327.7 143.8L326.1 136.2L331.1 127.5L340.9 120.1L341.4 114.9L346.2 111.8L348.1 108.5L355.7 109.7L362.9 106.8L379 105.3L380.4 106.6L382.2 106.2L380.7 112.4L390.5 115.5L391.4 117.2L398.2 119.5L400.1 118L400.3 115.5L403.1 114.3L417.8 118.3L422 116.9L423.9 118.1L427.5 118.1L432 110.7L432.3 106.7L425 107.8L423.4 106.7L419.4 107.7L415.3 106.7L412.6 103.6L413.6 102L412.3 101.1L414.6 99.2L417.6 99.1L418.5 97.6L422.3 97.8L427 96L436.7 98.1L440.7 98L443.4 96.1L442.9 94.7L433.4 89.5L436.5 87.5L435.3 86.7L438.2 85.5L429.9 87.5L430 88.7L433.1 89.1L432.7 89.8L427.8 91.3L424.9 89.3L426.6 87.8L421.5 86.8L419.3 89.9L417.7 90.2L415.4 94.8L417.6 97.9L412.7 99.7L412.1 98.4L409.8 98.1L407.4 98.6L408.8 99.8L407.8 100.1L405.3 99.5L408.1 104.7L406.2 104.2L406.3 107.2L405 107.2L398.8 99.5L399.1 96.6L386.3 88.5L384.7 89.2L385.2 91.8L397 99.7L393.7 99.1L392.9 100.4L394.1 102.2L392.2 104L391.4 104.2L392.2 102.1L390.8 99.9L384.2 96.6L381 94.1L380.4 92.2L377.8 91.3L373.1 93.7L366.2 93.9L366.1 96.2L361.6 98L359.4 101.4L360.2 102.5L355.7 106.7L351.3 106.6L349.2 108.1L347 106.1L342.2 106.3L342.3 103.5L340.9 102.5L342.5 98.5L341.2 93.9L344 92.5L356.2 93.2L357.2 92L357.6 88L354.1 84.9L351 84.1L350.8 82.6L356.8 82.7L356.1 80.4L358 81.3L362.7 79.7L363.3 78.1L367.7 76.8L369.4 73.8L376.2 72.9L377.6 72L376.2 69L377.1 65.8L381.2 64.5L380.5 66.2L381.8 67.1L379.3 69.1L381.9 72L385 71.1L388.2 72.5L395.2 70.3L399.3 71.1L402.5 69.6L403.2 65.2L405 64.5L408.2 65.9L408.9 63.2L406.9 62.8L406.7 61.6L418.2 59.9L416.1 59L405.7 60.3L402.6 58.6L402.1 54.8L403.1 53.6L410.8 49.8L407.8 48L404.4 48.6L402.4 49.9L402.7 51.2L395.7 54.5L394.2 57.3L397.6 59.8L395.7 62.1L393.7 62.6L391.8 67.8L385.9 69.3L380.7 61.1L376.8 63.4L371.3 62.8L370 56.1L371.8 54.8L381.1 51L389.5 44.4L398.4 40.4L406 39.6L409.1 37.9L416.3 37.6L422.6 39.1L420 39.6L422.2 40.9L424.3 40.2L440.6 44.1L442.3 46.4L440 47.5L426.4 46.7L429.6 48.2L429.9 51.2L434 52.3L433 50.4L434.4 49.7L439.2 51L440.9 50.5L439.5 49L444.2 47L447.9 47.9L449.1 46.5L447.4 45.3L448.4 44.1L446.9 42.9L452.5 43.5L453.6 44.6L451.1 44.9L451.1 46L452.7 46.7L467.4 42.3L468.9 42.4L467 43.6L477.6 42.2L479.9 43.4L482.2 42.1L480.1 41L481.1 40.3L497 43.8L498.4 42.8L493.9 41.1L493.4 37.9L498.4 34.3L505.2 34.4L505.6 35.6L503.7 37.2L505.6 39.2L505.1 42L507.3 43.2L502.6 47.4L504.8 47.7L510.1 44.5L508.9 43.3L509.9 42L507.2 40.7L508.8 38.7L506.2 37.1L509.8 35.8L509.3 34.3L511.4 35.4L510.6 37.3L512.7 37.7L511.8 36.3L515.2 35.5L523 36.5L521.2 34.8L521 32.7L533.6 32.1L532 31.1L534.3 29.8L561.5 27.1L568.7 24.6L574.5 27L582.2 26.6L588.3 28.3L587.8 29.3L578.8 31.6L586 32L587.1 33.3L591.1 32.5L606.4 34.1L606.5 32.5L614 32.9L617.2 33.9L618.1 35.2L616.9 36L622.6 38.4L624.5 36.3L639.7 37L638.3 35.2L640.9 34.3L659 35.6L665.9 38.3L678 38.3L679.7 39.1L679.4 40.6L681.9 41.1L695.7 40.8L699.2 42.6L701.6 42L700 40.7L700.9 39.8L717.2 41.2ZM458.2 97.4L460.8 99.5L459.1 99.6L457.7 102.4L458.4 104.8L461.7 106.3L467.7 106.1L467.8 102.1L466.2 101.4L466.7 100L465.4 99.9L465.8 98.2L469.5 98.1L467.4 95.8L465.8 96.3L465.6 97.7L465 94.4L462.7 93.7L460.6 90.8L466.1 89.5L466.1 86.3L462.4 85.9L458.2 87.2L453.4 90.8L457.2 96.4ZM168.7 41.8L160.4 41.2L163.6 39.7L167.5 41ZM178.9 41L178.9 43.1L181.6 41.5L184 42.8L183.4 44.3L185.3 45.6L188.8 42.4L189 40.2L194.8 40.7L197.4 41.7L196.1 43.7L197.5 44.8L193.3 47.2L188.5 46.9L185.4 50.4L180.2 51.9L178.5 54.1L173.7 56L171.5 58.2L170.6 62.1L173.6 62.4L175.4 65.8L178.2 65.4L190 69.4L195.5 69.7L195.7 73.4L200.2 77.6L202.8 74.9L200.3 70.7L206.9 66.9L205.4 63.9L203 62.4L205.3 60.3L203.8 55.4L212.3 55.1L217.3 57.7L220.8 57.9L221.4 62.1L224.7 63.6L230.8 59.3L237.2 66.1L236.4 67.3L245.3 70.7L248.5 73.5L248.6 75.7L239.9 79.5L227.2 79.5L217.8 86.4L222.7 83.4L229.9 81.5L231.7 82.5L229.8 83.9L231.1 87.5L237 88.2L239 86L240.4 88.2L229.3 92.9L227.8 92.8L227.7 91.1L231.2 89.4L225.7 89.7L218.6 93.9L218.3 95.3L220.1 96.7L212.6 98.1L216.1 98.1L212.1 98.5L210.2 102.1L208.9 101L209.9 103.2L208.1 105.6L207.3 101.7L207.3 103.8L206.1 103.5L207.4 104.2L208.5 108.9L197.3 117.1L199.9 126.2L199.2 129.6L196.6 128.3L194.1 121.8L191.8 119.8L189.8 120.7L187.2 119.2L181.6 119.4L180.8 119.6L181.6 121.4L179.7 121.8L172.3 120.6L166.8 123.4L165.3 125.2L164.3 135.1L167.4 141.4L171.1 143.7L175.9 142.6L178.5 141.4L179.4 138L185.9 136.9L186.3 138.3L184.3 143.5L183.4 143L183.3 146.9L182.1 148.2L190 148L193.2 149.5L192.4 157.8L197.1 162.4L200.9 160.8L206.3 162.7L208.7 161.1L210.2 157.8L213.2 157.5L216.5 155.1L217.7 155.8L216.1 157.2L216.6 161.9L217.9 160.3L217.2 158.1L219.7 157.2L220.1 155.7L223.6 158.9L230.2 159.8L231.4 158.7L236.2 158.6L234.5 159.2L235.2 160.1L238.3 161.2L238.7 162.8L241.8 164L245.7 168.1L252.1 168.5L257.4 171.6L260.1 176.5L259.2 180.2L262.8 180.5L262.8 182.5L264.4 181.2L270.2 183.1L270.8 185.4L280 185.7L285.6 189.6L288.8 190.3L290.5 194.7L289.7 198L282.7 206.1L281.5 215.7L278.1 223.9L276 225.9L270.7 226.7L264.7 229.8L263 231.8L262.2 237.3L252.4 248.8L247.6 249.7L243.1 247.8L246.4 253.8L244.5 256.4L241.5 257.4L235.3 257.7L235.7 261.4L234.5 262.1L229.8 262.1L230 264.1L233.1 265.1L229.6 267L228.9 270.1L225.4 271.1L224.8 272.6L228.7 274.5L228 276.3L221.7 281.5L223.7 284.7L218.3 285.8L217.1 287.7L210.1 284.5L208.8 277.3L211.7 273.9L208.7 273.3L210.6 271.5L211.3 268.2L213.5 268.9L214.6 264.8L213.2 264.2L212.6 266.7L211.3 266.5L213.6 258.5L212.8 254.3L217.1 244.8L217 237.7L218.2 235.3L219.7 219.5L219.3 216.7L217.1 214.7L208 209.3L200.5 194.4L197.5 192.3L197.2 189.5L200.5 185.3L198.1 184.5L198.1 182.1L199.8 178.5L202.3 177.2L205.7 172.3L203.6 163.4L200.9 162.1L199 163.8L200 164.9L198.2 165.6L197.9 164.4L193 163.1L190 159.8L189.8 160.9L188.7 160.1L188.6 157.8L185 153.4L177.5 152.1L170.6 147.6L166.9 148.7L153 143.4L149 140.1L149.5 137.2L147.9 134.5L141.5 128.8L141.4 127.1L135.5 122.1L133.7 117.7L132.3 116.9L130.4 116.4L130.7 119.7L136.8 126.7L138.7 131.4L141.2 133.3L139.9 134.4L135.6 130.5L135.4 128L129.9 124.6L131.7 122.9L129 120.9L125.4 113.9L118.8 110.8L111.2 99.4L112.2 89L110.6 83.6L113.8 83.9L114.8 85.8L114.3 82L105.1 78.3L104.3 75.3L101.7 74.5L101.4 72.9L96.1 69L91.8 63.8L86.7 63.6L80.3 60.9L65.8 58.2L63.5 58.7L64 60L56.6 61.7L57.2 58.5L58.8 57.4L52 61.3L53.4 62.3L51.5 63.7L43.1 68L30.4 71.2L44.6 64.9L45.9 62.2L36.1 62.7L36.3 60.7L32.4 60.4L27.8 57L30.9 53.7L38.5 52.5L37 51.2L38.4 50.4L30.1 51.1L23.8 48.7L31.1 46.8L36.6 47.8L26.5 43.3L33.7 41.3L36.2 39.3L46.8 37.3L87 42.2L100.4 39.6L101.8 40.4L103.7 39L108.5 41L111.1 39.7L111.4 41.2L117.1 40.4L129.5 42.2L132.2 43.2L129.4 44.2L140.1 44L142.2 45.2L144.4 44.2L142.4 43.4L143.7 42.7L147.7 42.4L157.1 44.7L163.1 44.4L162.9 43.2L164.7 42.8L167.8 43.5L167.7 45.4L169 43.8L170.6 43.9L171.5 41.9L167.1 39.8L167.2 37.6L169.6 36.2L174.2 37.4L177 39.6L175.2 40.6ZM131.7 33.8L130.7 34.7L135.1 34.1L137.9 35.1L140.2 34.1L143.6 36.7L144.6 35.9L143.2 33.8L147 33.8L149.2 34.7L151.1 38L158 39.9L154.5 41L155.8 41.8L155.1 42.5L148.1 41.6L133.4 42.9L125.3 40.1L135.2 39.3L124.2 38.9L123.1 38.2L127.8 37.4L121.2 36.9L124.3 34.6L129.6 33.4ZM151 33.2L149.2 34.5L146.1 33.1L149.5 32.7ZM207.3 33.8L200.5 34.4L198.3 32.6L203.9 32.7ZM186.9 33.7L188.5 34.9L190.3 33.3L195.4 32.5L198.8 34.6L198.5 35.9L204.4 34.5L211.8 37.3L215.5 36.9L224.2 39.8L226.1 41.6L222.4 42.6L236.3 46.3L232.2 50L226.6 47.2L224 47.5L223.7 48.6L229.4 51.2L230.7 53.2L230 54.7L222.4 52.5L227.7 56.1L218 54.2L210.3 50.6L202.9 50.9L204.2 49.4L212.1 49.1L211.4 48.4L214.7 45.4L214.1 44.5L202.1 39.7L197.4 40.5L181 38.5L183.1 37.6L180.2 37.6L179.6 35.5L181.1 33.7L188.3 32.4ZM159.3 32.3L165.2 32.5L163.9 34L166.9 34.9L166.6 36.7L161.4 37.3L155 35L159.1 34.6L156.9 33.3ZM647.2 33.6L639.7 33.3L644.1 32.3L647 33.1ZM173.6 34.5L169.2 35.9L168 33.1L171 31.7L179 32.3L176 34.1ZM119.1 37.2L113.8 38.2L108.1 36.3L112.1 32.6L110.2 31.4L116.9 31.1L129 33.1L119.1 36.4ZM661.5 29.8L656 30.4L652.2 29.7L656.4 29.3ZM172.8 30L166.4 30.1L170.3 28.7L172 29.4ZM650.2 28.9L648.6 30.4L637.9 30.8L634 29.5L635 28.1L642.9 27.8ZM163 26.6L164.5 27.5L163.7 30L158.2 29.9L158.3 28.7L155 28.9L154.9 27.3L162.8 26.8ZM143.6 27.6L148.2 28.1L147.4 30L132.5 31.2L136.4 29.7L124.6 29.6L129.2 27L141.9 29.1L139 27.1L142.9 26.6ZM475.1 38.6L467.4 38.5L463.2 37.1L462.9 36L465 35.5L464.9 34.4L468.9 32.7L467 32.5L471.8 30.7L471.3 29.8L496.3 26.1L497.7 26.9L496.4 27.5L477 31.4L470.8 35.3L471.2 36.9ZM170.6 25.8L176.8 26.4L181.6 28.8L199.9 29.3L200.3 30.2L196.1 31.1L183.7 31.2L175.2 30.3L174.2 28.2L165.8 26.5L166.5 25.7ZM127.6 24.7L125.8 26.9L120.2 27.9L114.3 27.8L121.8 25L124.9 25ZM409.4 24.3L401.5 24.6L402.8 24.1L401.6 23.5L406.6 23.8ZM168.3 23.9L163.8 23.8L162.7 22.3L168.9 23.2ZM159.9 23.3L160.7 24.2L149.6 23.2L151.6 22.6L149 21.4L158.4 22.4ZM570.2 23.4L558.9 24.2L564.2 21.3L570.7 22.6ZM396.5 20.6L403.1 22.1L398.1 22.9L394.2 26.4L391.8 26.5L387.5 25.2L389.3 24.5L380.9 20.7L394 19.9ZM410.9 19.2L414.8 19.9L411.9 21L400.2 20.9L394.7 19.4L405.8 18.7ZM462.3 18.9L455.2 20L453 19.5L454.1 18.9L449.7 18.8L463 18.6ZM559.9 22.2L549.9 21.9L542.4 19.3L551.9 17.5L560.4 20.4ZM186 20.7L188.4 21.3L178.4 23.6L174.2 23.3L172.1 22.5L173.7 21.2L166.6 19.7L171.4 18L170.5 17.6L175.2 17.5L184.4 19.4ZM223 13.8L236.2 15.3L224.7 17L229 17L217.6 20.4L206.2 21.4L208.9 21.6L207.6 22L209.2 22.9L200.5 25.6L204.2 26.4L198.9 27.6L187.8 27.4L181 27.1L180.8 26.1L184.5 25.6L183.5 24.2L190 24.9L184.1 23.3L189.8 21.3L186.1 19.5L196.3 19.1L184.8 19L176.8 16.2L189 14.7L193.6 15.4L201.4 13.7L218.7 13.7ZM305.8 13L318.3 14.5L297.2 16L314.2 15.8L315.9 16.5L313.7 17.7L328.5 16.2L335.6 17.4L319.9 19.6L324.5 19.7L320.6 22.5L320.7 24.7L323.1 26L316.6 26.7L320.3 27.8L320.8 29.5L318.7 29.7L321.3 31.4L316.8 31.6L319.1 32.4L318.5 33.1L312.9 33.4L315.4 35.6L310.4 35.3L315.7 37.1L316.5 38.7L312.9 39.1L308.9 37.1L309.6 38.5L307.3 39.5L315.3 39.7L304.5 43.1L296.4 43.8L291.6 46.6L280.4 49.1L277.6 53L274.4 54.6L275.2 56.2L273.2 59.8L270.4 59.9L267.5 58.3L263.5 58.3L256.7 52.7L252.1 45.6L254 43.3L257 42.5L258.3 40.1L253.1 41.4L250.6 40.8L251.3 38.4L257.2 38.9L248.3 36.7L250.6 34.8L245.3 30.6L237.5 27.8L223 27.9L217.2 26L226.5 25.2L217.9 24.7L213.4 23.9L213.7 23.1L228.6 21.2L229.4 20.5L224 19.8L235.5 17.4L234.7 16.5L253.9 16.2L259.2 15.1L271 16.7L266.2 15.6L266.5 14.7L289.8 12.7Z',fill:'var(--land)',stroke:'#514798','stroke-width':.4,'stroke-linejoin':'round'}));
+  markerRing=mk('circle',{cx:-99,cy:-99,r:7,fill:'none',stroke:'var(--gold)','stroke-width':1,opacity:.6});
+  marker=mk('circle',{cx:-99,cy:-99,r:2.6,fill:'var(--gold)'});
+  mapEl.appendChild(markerRing);mapEl.appendChild(marker);
+})();
+function placeMarker(){
+  const x=(lon+180)/360*MAPW,y=(90-lat)/180*MAPH;
+  marker.setAttribute('cx',x);marker.setAttribute('cy',y);
+  markerRing.setAttribute('cx',x);markerRing.setAttribute('cy',y);
+}
+mapEl.addEventListener('click',e=>{
+  const r=mapEl.getBoundingClientRect();
+  lon=clamp(((e.clientX-r.left)/r.width)*360-180,-180,180);
+  lat=clamp(90-((e.clientY-r.top)/r.height)*180,-90,90);
+  document.getElementById('lat').value=lat.toFixed(2);
+  document.getElementById('lon').value=lon.toFixed(2);
+  const res=resolvePlace();
+  tz=res.tz;setTzSelect(tz);
+  placeMarker();rebuildObserver();syncFromInputs();updatePlaceLabel();recompute(true);
+});
+
+/* ---------- wheel ---------- */
+const wEl=document.getElementById('wheel');
+const CX=220,CY=220,RING=192,TICKR=207,R_DIRECT=162,R_RETRO=128,R_LUM=94,HANDR=178;
+const pos=(L,r)=>{const t=(180-L)*D;return[CX+r*Math.cos(t),CY-r*Math.sin(t)];};
+let horizonArc,ascLine,ascDot,handLine,handDot,rippleG;
+(function buildWheel(){
+  /* soft glow filter, applied to glyphs only while the engine is sounding */
+  const defs=mk('defs',{});
+  const gf=mk('filter',{id:'glowF',x:'-60%',y:'-60%',width:'220%',height:'220%'});
+  gf.appendChild(mk('feGaussianBlur',{stdDeviation:2.2,result:'b'}));
+  const fm=mk('feMerge',{});
+  fm.appendChild(mk('feMergeNode',{in:'b'}));
+  fm.appendChild(mk('feMergeNode',{in:'SourceGraphic'}));
+  gf.appendChild(fm);defs.appendChild(gf);wEl.appendChild(defs);
+  horizonArc=mk('path',{d:'',fill:'#0a0816',opacity:.62});wEl.appendChild(horizonArc);
+  wEl.appendChild(mk('circle',{cx:CX,cy:CY,r:RING,fill:'none',stroke:'#443a68','stroke-width':1}));
+  wEl.appendChild(mk('circle',{cx:CX,cy:CY,r:R_DIRECT,fill:'none',stroke:'#2a2450','stroke-width':1}));
+  wEl.appendChild(mk('circle',{cx:CX,cy:CY,r:R_RETRO,fill:'none',stroke:'#3a2e35','stroke-width':1,'stroke-dasharray':'3 5'}));
+  wEl.appendChild(mk('circle',{cx:CX,cy:CY,r:R_LUM,fill:'none',stroke:'#2a2450','stroke-width':1}));
+  for(let s=0;s<12;s++){
+    const L=s*30,[x1,y1]=pos(L,RING-9),[x2,y2]=pos(L,RING+9);
+    wEl.appendChild(mk('line',{x1,y1,x2,y2,stroke:'#443a68','stroke-width':1}));
+    const[gx,gy]=pos(L+15,TICKR);
+    const hit=mk('circle',{cx:gx,cy:gy,r:16,fill:'transparent','class':'clickable'});
+    hit.addEventListener('click',()=>toggleInfo('sign',s));
+    wEl.appendChild(hit);
+    const t=mk('text',{x:gx,y:gy,'text-anchor':'middle','dominant-baseline':'central',fill:'#8a7440','font-size':15,'class':'clickable','pointer-events':'none'});
+    t.textContent=SG[SIGNS[s]];wEl.appendChild(t);
+  }
+  rippleG=mk('g',{});wEl.appendChild(rippleG);
+  ascLine=mk('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:'#c9a15c','stroke-width':1.6,'stroke-opacity':.9});wEl.appendChild(ascLine);
+  ascDot=mk('circle',{cx:CX,cy:CY,r:3.6,fill:'#c9a15c'});wEl.appendChild(ascDot);
+  handLine=mk('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:'#a89bd6','stroke-width':.8,'stroke-opacity':0});wEl.appendChild(handLine);
+  handDot=mk('circle',{cx:CX,cy:CY,r:2.2,fill:'#a89bd6','fill-opacity':0});wEl.appendChild(handDot);
+  wEl.appendChild(mk('circle',{cx:CX,cy:CY,r:2.5,fill:'#8a7440'}));
+  for(const b of BODIES){
+    const hit=mk('circle',{id:'h-'+b,cx:CX,cy:CY,r:18,fill:'transparent','class':'clickable'});
+    hit.addEventListener('click',()=>toggleInfo('body',b));
+    wEl.appendChild(hit);
+    const t=mk('text',{id:'g-'+b,x:CX,y:CY,'text-anchor':'middle','dominant-baseline':'central',
+      fill:'#c9a15c','font-size':19,'pointer-events':'none'});
+    t.textContent=PG[b];wEl.appendChild(t);
+  }
+})();
+function drawHorizon(asc){
+  const desc=rev(asc+180);
+  const[x1,y1]=pos(asc,RING),[x2,y2]=pos(desc,RING);
+  horizonArc.setAttribute('d',`M${CX} ${CY} L${x1} ${y1} A${RING} ${RING} 0 0 0 ${x2} ${y2} Z`);
+}
+
+const dispLon={},lonTween={},dispR={},targetR={};
+for(const b of BODIES){dispLon[b]=null;lonTween[b]=null;
+  const r0=(b==='sun'||b==='moon')?R_LUM:R_DIRECT;dispR[b]=r0;targetR[b]=r0;}
+function setLonTarget(b,L,dur){
+  if(dispLon[b]===null){dispLon[b]=L;return;}
+  lonTween[b]={from:dispLon[b],delta:shortest(dispLon[b],L),start:performance.now(),dur};
+}
+
+/* ---------- audio ---------- */
+let master,lp,hp,verb,drone={},dgain={},trem={},chimes=[],ci=0,built=false,sounding=false;
+const rampCache={};
+function ramp(param,val,time,key,thresh){
+  if(rampCache[key]!==undefined&&Math.abs(rampCache[key]-val)<(thresh||1e-4))return;
+  rampCache[key]=val;param.rampTo(val,time);
+}
+function buildGraph(){
+  /* reset any partial state so a rebuild is always clean */
+  drone={};dgain={};trem={};chimes=[];ci=0;
+  for(const k in rampCache)delete rampCache[k];
+  /* CRITICAL: Tone.Destination is bound to the context that existed at page load.
+     After Tone.setContext() it points at the WRONG context and connecting to it
+     throws. Always resolve the destination of the CURRENT context. */
+  const dest=(typeof Tone.getDestination==='function')?Tone.getDestination():Tone.Destination;
+  master=new Tone.Gain(Tone.dbToGain(+document.getElementById('vol').value));
+  lp=new Tone.Filter(2400,'lowpass');
+  hp=new Tone.Filter(30,'highpass');
+  verb=new Tone.Freeverb({roomSize:.5,dampening:2600,wet:.2});
+  master.chain(hp,lp,verb,dest);
+  for(const b of BODIES){
+    const s=new Tone.Synth({oscillator:{type:(b==='sun'||b==='moon')?'sine':'triangle'},
+      envelope:{attack:3,decay:.4,sustain:.9,release:3.5}});
+    const g=new Tone.Gain(0.0001),tg=new Tone.Gain(1);
+    const l=new Tone.LFO({frequency:.22,min:1,max:1});
+    l.connect(tg.gain);
+    s.connect(g);g.connect(tg);tg.connect(master);
+    drone[b]=s;dgain[b]=g;trem[b]={lfo:l,on:false};
+  }
+  const cg=new Tone.Gain(.38);cg.connect(master);
+  const n=IS_TOUCH?5:8;
+  for(let i=0;i<n;i++){
+    const v=new Tone.Synth({oscillator:{type:'triangle'},
+      envelope:{attack:.05,decay:3.4,sustain:.10,release:4.8}});
+    v.connect(cg);chimes.push(v);
+  }
+}
+function chime(b){
+  if(!audible(b))return;
+  flash[b]=performance.now()+320;
+  if(dispLon[b]!==null){
+    const[x,y]=pos(dispLon[b],dispR[b]),n=performance.now();
+    ripples.push({x,y,start:n},{x,y,start:n+150,big:true});
+  }
+  if(!sounding||!sky||!chimes.length)return;
+  chimes[ci++%chimes.length].triggerAttackRelease(freqOf(b,sky),2.0);
+}
+async function startSound(){
+  if(!built){
+    try{
+      /* prefer a playback-latency context: larger buffers, no mobile crackle */
+      try{Tone.setContext(new Tone.Context({latencyHint:'playback',lookAhead:IS_TOUCH?0.3:0.1}));}catch(_){}
+      buildGraph();
+    }catch(err){
+      /* last resort: a plain default context — sound must work */
+      try{Tone.setContext(new Tone.Context());}catch(_){}
+      buildGraph();
+    }
+    built=true;
+  }
+  await Tone.start();
+  sounding=true;
+  for(const b of BODIES){
+    drone[b].triggerAttack(freqOf(b,sky)*DET_F[b]);
+    const g=document.getElementById('g-'+b);
+    if(g&&g.setAttribute)g.setAttribute('filter','url(#glowF)');
+  }
+  applyMix();syncMoonAudio();
+  document.getElementById('miniBar').classList.toggle('show',!wheelVisible);
+}
+function stopSound(){
+  sounding=false;
+  for(const b of BODIES){
+    if(drone[b])drone[b].triggerRelease();
+    if(trem[b]&&trem[b].on){trem[b].lfo.stop();trem[b].on=false;}
+    const g=document.getElementById('g-'+b);
+    if(g&&g.removeAttribute)g.removeAttribute('filter');
+  }
+  document.getElementById('miniBar').classList.remove('show');
+}
+function setVol(v){if(master)master.gain.rampTo(Tone.dbToGain(v),.1);}
+document.getElementById('vol').addEventListener('input',e=>{setVol(+e.target.value);document.getElementById('miniVol').value=e.target.value;});
+document.getElementById('miniVol').addEventListener('input',e=>{setVol(+e.target.value);document.getElementById('vol').value=e.target.value;});
+
+/* the Moon rules the air: veil, body, and the size of the room */
+function syncMoonAudio(){
+  if(!sounding||!sky)return;
+  /* eased curves: gentle near the new moon, opening dramatically toward full */
+  const i=sky.ill;
+  ramp(lp.frequency, 380+Math.pow(i,1.3)*5000, 2.5, 'lp', 25);
+  ramp(hp.frequency, 140-Math.pow(i,1.2)*118,  2.5, 'hp', 3);
+  ramp(verb.roomSize, 0.28+Math.pow(i,1.5)*0.60, 2.5, 'rs', 0.02);
+  ramp(verb.wet,      0.12+Math.pow(i,1.6)*0.42, 2.5, 'wt', 0.02);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✎ EDITABLE TEXT — CLOCK STRIP EXPLAINERS
+   (the ${...} parts are live values filled in by the engine)
+   ═══════════════════════════════════════════════════════════════════ */
+const CLOCK_TEXT={
+  date:()=>`The date at that place, by its own calendar. Time runs forward from the moment you chose — press Freeze to hold it still, or open the instrument to make it run faster.`,
+  clock:()=>`The time a wall clock showed at that place — time zones, daylight saving and all. It is the human, legal time. The sky keeps none of it.`,
+  sun:(eotAbs,aheadBehind)=>`True solar time, read from the Sun's actual angle in this sky — the time a sundial would show. Today the sundial runs <b style="color:var(--violet)">${eotAbs} minutes ${aheadBehind}</b> clockwork mean time.`,
+  asc:()=>`The Ascendant — the degree of the zodiac climbing over the eastern horizon this very minute. It sweeps the whole circle once a day, about 1° every 4 minutes, so it depends on the exact minute and the exact place. It is the closest thing a sky has to a fingerprint.`
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✎ EDITABLE TEXT — READING CARDS
+   (the ${...} parts are live values filled in by the engine)
+   ═══════════════════════════════════════════════════════════════════ */
+const CARD_TEXT={
+  rising:(riseName)=>`${riseName} is climbing the eastern horizon, and so becomes the first house — every other sign is counted from here. It moves a degree every four minutes, which is why the exact minute and the exact place matter so much.`,
+  sunUp:(signName,alt)=>`In ${signName}, <span class="hl">${alt}° above the horizon</span> — up, and singing near full voice. Its pitch rides the season: highest when the Earth is nearest in January, a whole tone lower at July's far point.`,
+  sunDown:(signName)=>`In ${signName}, <span class="hl">beneath the horizon</span> — it is night, and the Sun only murmurs. Its pitch rides the season: highest when the Earth is nearest in January, a whole tone lower at July's far point.`,
+  moon:(signName,glyph,pct,roomPhrase)=>`In ${signName} ${glyph}, ${pct}% lit. Her phase is the angle between Moon and Sun — the one aspect the naked eye can see. She rules the air itself: ${roomPhrase}.`,
+  moonRoomFull:`the veil is lifted, the body full, the room vast and ringing`,
+  moonRoomNew:`the air is thin and dark, the room close and dry`,
+  moonRoomHalf:`the veil is half-drawn, the room half-open`,
+  above:`Presence follows altitude: the higher a body stands in this sky, the louder its voice.`,
+  below:`Faint, until the turning world lifts them across the gold line.`,
+  retroSome:`Running backward against the stars — drawn to the inner dashed ring, and trembling.`,
+  retroNone:`Every wanderer runs forward on the outer ring. No voice trembles.`,
+  tune:(scaleTxt,rootName,earthTail)=>`Tuned to ${scaleTxt}, with <span class="hl">${rootName}</span> as the root${earthTail}.`,
+  tuneEarthTail:` — the ground you stand on, which is why it makes no sound`
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✎ EDITABLE TEXT — INFO PANEL (per-body / per-sign popup)
+   ═══════════════════════════════════════════════════════════════════ */
+const INFO_TEXT={
+  moonAspect:(roomPhrase)=>`The phase is not a property of the Moon at all — it is the angle between Moon and Sun, the one aspect the naked eye can see. New moon is their conjunction; full moon their opposition. Here she rules the air: ${roomPhrase}.`,
+  moonRoomFull:`the veil is lifted, the body full, the room vast`,
+  moonRoomNew:`the air is thin and dark, the room close and dry`,
+  moonRoomHalf:`the veil is half-drawn`,
+  retroMotion:`retrograde — running backward, trembling`,
+  voiceRoot:`the root: everything is tuned from here`,
+  voiceMuted:`muted`,
+  voiceSoloed:`silenced by solo`,
+  signClosing:`In this instrument the signs colour the reading, not the sound — the music listens to the horizon and the wanderers. The signs are how the sky is read, and have been for four thousand years.`
+};
+
+/* ---------- recompute ---------- */
+function recompute(forceSlow){
+  sky=snapshot(skyTime,forceSlow);
+  const dur=frozen?600:Math.max(FAST_MS+40,300);
+  for(const b of BODIES){
+    setLonTarget(b,sky.lon[b],dur);
+    targetR[b]=(b==='sun'||b==='moon')?R_LUM:(sky.retro[b]?R_RETRO:R_DIRECT);
+  }
+  const asg=signOf(sky.asc);
+  setText('clockT',fmtT(skyTime,tz,true));
+  const sh=Math.floor(sky.solar),sm=Math.round((sky.solar%1)*60)%60;
+  setText('solarT',String(sh).padStart(2,'0')+':'+String(sm).padStart(2,'0'));
+  setText('ascT',SG[asg.name]+' '+asg.deg.toFixed(0)+'°');
+  setText('liveDate',safeFmt(skyTime,tz,{day:'numeric',month:'short',year:'numeric'}));
+  refreshClockInfo();
+
+  // moon corner
+  const ph=phaseName(sky.ill,sky.waxing);
+  setText('cornerPhase',ph);
+  setText('cornerPct',(sky.ill*100).toFixed(0)+'% lit');
+  const w=(34*(1-sky.ill)).toFixed(1);
+  const shadowStyle='width:'+w+'px;'+(sky.waxing?'left:0;right:auto':'right:0;left:auto');
+  if(_memo['moonShadow']!==shadowStyle){
+    _memo['moonShadow']=shadowStyle;
+    document.getElementById('cornerShadow').style.cssText=shadowStyle;
+  }
+
+  writeTable();
+
+  if(sounding){
+    for(const b of BODIES){
+      ramp(drone[b].frequency,freqOf(b,sky)*DET_F[b],1.0,'f'+b,0.4);
+      ramp(dgain[b].gain,audible(b)?(0.03+0.32*sstep(sky.alt[b],-18,55)):0.0001,1.0,'g'+b,0.004);
+      const want=!!sky.retro[b];
+      if(want!==trem[b].on){
+        trem[b].lfo.min=want?0.45:1;trem[b].lfo.max=1;
+        want?trem[b].lfo.start():trem[b].lfo.stop();
+        trem[b].on=want;
+      }
+    }
+    syncMoonAudio();
+  }
+  writeReading();
+  renderInfoLive();
+}
+
+function writeTable(){
+  const s=sky;if(!s)return;
+  let h='';
+  for(const b of BODIES){
+    const sg=signOf(s.lon[b]),up=s.alt[b]>0,rt=!!s.retro[b],f=freqOf(b,s);
+    const pres=Math.round((0.08+0.92*sstep(s.alt[b],-18,55))*100);
+    const voice=b===rootBody?'root':(!audible(b)?(muted.has(b)?INFO_TEXT.voiceMuted:'—'):noteName(f)+' · '+f.toFixed(0)+'Hz');
+    h+=`<tr class="${(rt?'retro ':'')+(up?'':'below')}"><td><span class="glyph">${PG[b]}</span>${PN[b]}</td>
+      <td>${sg.deg.toFixed(1)}° ${SG[sg.name]} ${sg.name}</td><td>${s.house[b]}</td>
+      <td>${s.alt[b].toFixed(1)}°<div class="bar"><i style="width:${pres}%"></i></div></td>
+      <td>${voice}</td>
+      <td>${PLANETS.includes(b)?(rt?'<span class="tag">retrograde</span>':'direct'):'—'}</td></tr>`;
+  }
+  setHTML('tbody',h);
+}
+
+/* ---------- clock strip info ---------- */
+let clockOpen=null;
+function refreshClockInfo(){
+  const box=document.getElementById('clockInfo');
+  if(!clockOpen){box.hidden=true;return;}
+  box.hidden=false;
+  let h='';
+  if(clockOpen==='sun'&&sky){
+    const eot=eotMinutes(sky);
+    h=CLOCK_TEXT.sun(Math.abs(eot).toFixed(0),eot>=0?'ahead of':'behind');
+  }else h=CLOCK_TEXT[clockOpen]?CLOCK_TEXT[clockOpen]():'';
+  setHTML('clockInfo',h);
+}
+document.querySelectorAll('.cbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const k=b.dataset.info;
+    clockOpen=(clockOpen===k)?null:k;
+    document.querySelectorAll('.cbtn').forEach(x=>x.classList.toggle('on',x.dataset.info===clockOpen));
+    refreshClockInfo();
+  });
+});
+
+/* ---------- reading cards ---------- */
+/* a fixed-slot glyph strip: every slot always present, inactive ones ghosted.
+   Constant element count = constant layout = zero reflow. */
+function strip(list,onSet,onCls){
+  return `<div class="strip${list.length===5?' five':''}">`+
+    list.map(b=>`<span class="${onSet.has(b)?(onCls||''):'off'}">${PG[b]}</span>`).join('')+
+    `</div>`;
+}
+function writeReading(){
+  const s=sky;if(!s)return;
+  const asg=signOf(s.asc),sun=signOf(s.lon.sun),moon=signOf(s.lon.moon);
+  const up=BODIES.filter(b=>s.alt[b]>0),down=BODIES.filter(b=>s.alt[b]<=0);
+  const retros=PLANETS.filter(p=>s.retro[p]);
+  const ph=phaseName(s.ill,s.waxing);
+
+  setHTML('readLead',
+    `<p class="lead">${fmtD(skyTime,tz)} · ${fmtT(skyTime,tz,false)} · ${placeLabel} · ${Math.abs(lat).toFixed(2)}°${lat>=0?'N':'S'} ${Math.abs(lon).toFixed(2)}°${lon>=0?'E':'W'}</p>`);
+
+  setText('cvRise',SG[asg.name]+' '+asg.deg.toFixed(0)+'° '+asg.name);
+  setHTML('cbRise',`<div class="cnote">${CARD_TEXT.rising(asg.name)}</div>`);
+
+  setText('cvSun',SG[sun.name]+' '+sun.deg.toFixed(0)+'° · '+(s.alt.sun>0?s.alt.sun.toFixed(0)+'° up':'below'));
+  setHTML('cbSun',`<div class="cnote">${s.alt.sun>0?CARD_TEXT.sunUp(sun.name,s.alt.sun.toFixed(0)):CARD_TEXT.sunDown(sun.name)}</div>`);
+
+  const roomPhrase=s.ill>.6?CARD_TEXT.moonRoomFull:s.ill<.25?CARD_TEXT.moonRoomNew:CARD_TEXT.moonRoomHalf;
+  setText('cvMoon',ph+' · '+(s.ill*100).toFixed(0)+'%');
+  setHTML('cbMoon',`<div class="cnote">${CARD_TEXT.moon(moon.name,SG[moon.name],(s.ill*100).toFixed(0),roomPhrase)}</div>`);
+
+  const upSet=new Set(up),downSet=new Set(down),retroSet2=new Set(retros);
+  setText('cvAbove',up.length?up.map(b=>PG[b]).join(' '):'none');
+  setHTML('cbAbove',strip(BODIES,upSet)+`<div class="cnote">${CARD_TEXT.above}</div>`);
+  setText('cvBelow',down.length?down.map(b=>PG[b]).join(' '):'none');
+  setHTML('cbBelow',strip(BODIES,downSet)+`<div class="cnote">${CARD_TEXT.below}</div>`);
+  setText('cvRetro',retros.length?retros.map(p=>PG[p]).join(' '):'none');
+  setHTML('cbRetro',strip(PLANETS,retroSet2,'rx')+`<div class="cnote">${retros.length?CARD_TEXT.retroSome:CARD_TEXT.retroNone}</div>`);
+
+  const scaleTxt=scaleKey==='pure'?'the pure Pythagorean ladder on '+NOTE[rootPc]
+    :NOTE[rootPc]+' '+document.getElementById('scale').selectedOptions[0].textContent.toLowerCase();
+  setHTML('tuneLine',CARD_TEXT.tune(scaleTxt,rootBody==='earth'?'Earth':PN[rootBody],rootBody==='earth'?CARD_TEXT.tuneEarthTail:''));
+}
+
+/* ---------- info panel ----------
+   Static shell (header, lore, buttons) is built ONCE per open;
+   only the live block re-renders, and only when its text changes.
+   Buttons are never rebuilt, so taps can't land on a replaced element. */
+let infoLiveMemo=null;
+function toggleInfo(kind,id){
+  if(openInfo&&openInfo.kind===kind&&openInfo.id===id){closeInfo();return;}
+  openInfo={kind,id};infoLiveMemo=null;
+  buildInfoStatic();
+  renderInfoLive();
+  document.getElementById('skyGrid').classList.add('split');
+  document.getElementById('scrim').classList.add('show');
+}
+function closeInfo(){
+  openInfo=null;infoLiveMemo=null;
+  document.getElementById('skyGrid').classList.remove('split');
+  document.getElementById('scrim').classList.remove('show');
+}
+document.getElementById('infoClose').addEventListener('click',closeInfo);
+document.getElementById('scrim').addEventListener('click',closeInfo);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&openInfo)closeInfo();});
+document.getElementById('moonCorner').addEventListener('click',()=>toggleInfo('body','moon'));
+
+const ord=n=>n+(n===1?'st':n===2?'nd':n===3?'rd':'th');
+function buildInfoStatic(){
+  const el=document.getElementById('infoContent');
+  if(openInfo.kind==='body'){
+    const b=openInfo.id;
+    el.innerHTML=`<h2><span class="bigglyph">${PG[b]}</span>${PN[b]}</h2>
+      <p class="tradition">${LORE[b]}</p>
+      <div class="nowblock" id="infoLive"></div>
+      <div class="mixrow">
+        <button id="muteBtn" type="button"></button>
+        <button id="soloBtn" type="button"></button>
+      </div>`;
+    document.getElementById('muteBtn').addEventListener('click',()=>{
+      muted.has(b)?muted.delete(b):muted.add(b);
+      applyMix();syncMixButtons();writeTable();writeReading();renderInfoLive(true);
+    });
+    document.getElementById('soloBtn').addEventListener('click',()=>{
+      solos.has(b)?solos.delete(b):solos.add(b);
+      applyMix();syncMixButtons();writeTable();writeReading();renderInfoLive(true);
+    });
+    syncMixButtons();
+  }else{
+    const i=openInfo.id,name=SIGNS[i],[elem,mode,ruler,line]=SIGN_META[name];
+    el.innerHTML=`<h2><span class="bigglyph">${SG[name]}</span>${name}</h2>
+      <p class="tradition">${line}</p>
+      <div class="nowblock">
+        <div><span class="k">Tradition</span> — ${elem} · ${mode} · ruled by ${ruler}</div>
+        <div id="infoLive"></div>
+        <div style="margin-top:8px;color:var(--muted);font-style:italic;font-family:'Cormorant Garamond',serif">${INFO_TEXT.signClosing}</div>
+      </div>`;
+  }
+}
+function syncMixButtons(){
+  if(!openInfo||openInfo.kind!=='body')return;
+  const b=openInfo.id;
+  const m=document.getElementById('muteBtn'),so=document.getElementById('soloBtn');
+  if(!m||!so)return;
+  m.className=muted.has(b)?'active':'';
+  m.textContent=muted.has(b)?'Unmute':'Mute';
+  so.className=solos.has(b)?'active':'';
+  so.textContent=solos.has(b)?'Subtract':(solos.size>0?'Add':'Solo');
+}
+function renderInfoLive(force){
+  if(!openInfo||!sky)return;
+  const el=document.getElementById('infoLive');
+  if(!el)return;
+  let h='';
+  if(openInfo.kind==='body'){
+    const b=openInfo.id,sg=signOf(sky.lon[b]),f=freqOf(b,sky),rt=!!sky.retro[b];
+    const pres=Math.round((0.08+0.92*sstep(sky.alt[b],-18,55))*100);
+    if(b==='moon'){
+      const ph=phaseName(sky.ill,sky.waxing),w=(40*(1-sky.ill)).toFixed(1);
+      const roomPhrase=sky.ill>.6?INFO_TEXT.moonRoomFull:sky.ill<.25?INFO_TEXT.moonRoomNew:INFO_TEXT.moonRoomHalf;
+      h+=`<div style="margin-bottom:10px;display:flex;align-items:center;gap:10px">
+        <span class="moondisc" style="width:40px;height:40px"><span class="moonshadow" style="width:${w}px;${sky.waxing?'left:0':'right:0'}"></span></span>
+        <span><b style="color:var(--violet)">${ph}</b> · ${(sky.ill*100).toFixed(0)}% illuminated</span></div>`;
+      h+=`<div style="margin-bottom:10px;color:var(--muted);font-style:italic;font-family:'Cormorant Garamond',serif">${INFO_TEXT.moonAspect(roomPhrase)}</div>`;
+    }
+    h+=`<div><span class="k">Position</span> — ${sg.deg.toFixed(1)}° ${SG[sg.name]} ${sg.name}, house ${sky.house[b]}</div>`;
+    h+=`<div><span class="k">In this sky</span> — ${sky.alt[b]>0?sky.alt[b].toFixed(0)+'° above the horizon':'beneath the horizon'} · presence ${pres}%<div class="bar" style="max-width:180px"><i style="width:${pres}%"></i></div></div>`;
+    if(PLANETS.includes(b))h+=`<div><span class="k">Motion</span> — ${rt?'<span style="color:var(--retro)">'+INFO_TEXT.retroMotion+'</span>':'direct'}</div>`;
+    h+=`<div><span class="k">Voice</span> — ${b===rootBody?INFO_TEXT.voiceRoot:(!audible(b)?(muted.has(b)?INFO_TEXT.voiceMuted:INFO_TEXT.voiceSoloed):noteName(f)+' · '+f.toFixed(0)+' Hz')}</div>`;
+  }else{
+    const i=openInfo.id,name=SIGNS[i];
+    const here=BODIES.filter(b=>signOf(sky.lon[b]).idx===i);
+    const houseNum=((i-sky.ascSign)+12)%12+1;
+    h+=`<div><span class="k">In this sky</span> — ${name} is the ${ord(houseNum)} house${i===sky.ascSign?' — <b style="color:var(--gold)">the rising sign</b>':''}</div>`;
+    h+=`<div><span class="k">Currently holding</span> — ${here.length?here.map(b=>PG[b]+' '+PN[b]).join(', '):'no wandering body'}</div>`;
+  }
+  if(!force&&h===infoLiveMemo)return;
+  infoLiveMemo=h;
+  el.innerHTML=h;
+}
+
+/* ---------- loop ---------- */
+let last=performance.now(),acc=0,prevHand=null,wheelVisible=true,gearVal=1;
+document.getElementById('gear').addEventListener('change',e=>gearVal=+e.target.value);
+function frame(now){
+  const dt=Math.min(.1,(now-last)/1000);last=now;
+  if(!frozen){
+    skyTime=new Date(skyTime.getTime()+dt*1000*rate);
+    acc+=dt*1000;
+    if(acc>=FAST_MS){acc=0;recompute();}
+  }
+  if(!sky){requestAnimationFrame(frame);return;}
+
+  const asc=ascOf(skyTime);
+  drawHorizon(asc);
+  const[ax,ay]=pos(asc,RING);
+  ascLine.setAttribute('x2',ax);ascLine.setAttribute('y2',ay);
+  ascDot.setAttribute('cx',ax);ascDot.setAttribute('cy',ay);
+
+  const handLon=rev(asc*gearVal),showHand=gearVal>1;
+  const[hx,hy]=pos(handLon,HANDR);
+  handLine.setAttribute('x2',hx);handLine.setAttribute('y2',hy);
+  handDot.setAttribute('cx',hx);handDot.setAttribute('cy',hy);
+  handLine.setAttribute('stroke-opacity',showHand?.5:0);
+  handDot.setAttribute('fill-opacity',showHand?.8:0);
+
+  const cross=showHand?handLon:asc;
+  if(prevHand!==null&&!frozen&&sounding){
+    const swept=rev(cross-prevHand);
+    if(swept>0&&swept<25){
+      for(const b of BODIES){
+        if(dispLon[b]===null)continue;
+        const d=rev(dispLon[b]-prevHand);
+        if(d>0&&d<=swept)chime(b);
+      }
+    }else if(swept>=25&&swept<180){
+      for(const b of BODIES)if(Math.random()<0.12)chime(b);
+    }
+  }
+  prevHand=cross;
+
+  for(const b of BODIES){
+    if(dispLon[b]===null)continue;
+    const tw=lonTween[b];
+    if(tw){const t=Math.min(1,(now-tw.start)/tw.dur);
+      dispLon[b]=rev(tw.from+tw.delta*t);if(t>=1)lonTween[b]=null;}
+    dispR[b]+=(targetR[b]-dispR[b])*(1-Math.exp(-dt*3));
+    const[x,y]=pos(dispLon[b],dispR[b]);
+    const g=document.getElementById('g-'+b),hit=document.getElementById('h-'+b);
+    g.setAttribute('x',x);g.setAttribute('y',y);
+    hit.setAttribute('cx',x);hit.setAttribute('cy',y);
+    const base=0.3+0.7*sstep(sky.alt[b],-12,30);
+    g.setAttribute('opacity',audible(b)?base:base*0.35);
+    g.setAttribute('font-size',(flash[b]&&now<flash[b])?26:19);
+    g.setAttribute('fill',sky.retro[b]?'#c1633f':'#c9a15c');
+  }
+
+  if(ripples.length||hadRipples){
+    while(rippleG.firstChild)rippleG.removeChild(rippleG.firstChild);
+    ripples=ripples.filter(r=>now-r.start<900);
+    for(const r of ripples){
+      if(now<r.start)continue;                 // second ring waits its turn
+      const t=(now-r.start)/900;
+      rippleG.appendChild(mk('circle',{cx:r.x,cy:r.y,r:(r.big?9:6)+(r.big?34:26)*t,fill:'none',
+        stroke:r.big?'#a89bd6':'#c9a15c','stroke-width':(r.big?1:1.2)*(1-t),'stroke-opacity':(r.big?.5:.7)*(1-t)}));
+    }
+    hadRipples=ripples.length>0;
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- wiring ---------- */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(showToast._h);
+  showToast._h=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function rebuildObserver(){obs=new Astronomy.Observer(clamp(lat,-89.5,89.5),lon,0);}
+const dtEl=document.getElementById('dt');
+dtEl.addEventListener('keydown',e=>e.preventDefault());
+dtEl.addEventListener('click',()=>{if(dtEl.showPicker)try{dtEl.showPicker()}catch(_){}});
+dtEl.addEventListener('change',()=>{syncFromInputs();recompute(true);});
+
+function setTzSelect(z){
+  const sel=document.getElementById('tz');
+  if(![...sel.options].some(o=>o.value===z)){
+    const o=document.createElement('option');o.value=z;o.textContent=z;sel.insertBefore(o,sel.firstChild);
+  }
+  sel.value=z;
+}
+(function initTz(){
+  const sel=document.getElementById('tz');
+  const zones=[...new Set(FLAT.map(p=>p.z))].sort();
+  for(const z of zones){const o=document.createElement('option');o.value=z;o.textContent=z;sel.appendChild(o);}
+  sel.addEventListener('change',e=>{tz=e.target.value;syncFromInputs();updatePlaceLabel();recompute(true);});
+})();
+(function initPitch(){
+  const sel=document.getElementById('rootPitch');
+  NOTE.forEach((n,i)=>{const o=document.createElement('option');o.value=i;o.textContent=n;if(i===0)o.selected=true;sel.appendChild(o);});
+  sel.addEventListener('change',e=>{rootPc=+e.target.value;recompute();});
+})();
+function syncFromInputs(){
+  const v=dtEl.value;if(!v)return;
+  const[dp,tp]=v.split('T');const[y,mo,d]=dp.split('-').map(Number);const[h,mi]=tp.split(':').map(Number);
+  skyTime=wallToInstant(y,mo,d,h,mi,tz);
+}
+function onCoordEdit(){
+  lat=clamp(+document.getElementById('lat').value||0,-90,90);
+  lon=clamp(+document.getElementById('lon').value||0,-180,180);
+  const res=resolvePlace();tz=res.tz;setTzSelect(tz);
+  placeMarker();rebuildObserver();syncFromInputs();updatePlaceLabel();recompute(true);
+}
+document.getElementById('lat').addEventListener('change',onCoordEdit);
+document.getElementById('lon').addEventListener('change',onCoordEdit);
+document.getElementById('rate').addEventListener('change',e=>rate=+e.target.value);
+document.getElementById('rootBody').addEventListener('change',e=>{rootBody=e.target.value;recompute();});
+document.getElementById('scale').addEventListener('change',e=>{scaleKey=e.target.value;recompute();});
+document.getElementById('freeze').addEventListener('click',e=>{
+  frozen=!frozen;e.target.classList.toggle('active',frozen);
+  e.target.textContent=frozen?'Frozen':'Freeze';
+  if(frozen)recompute(true);
+});
+const playBtn=document.getElementById('play');
+playBtn.addEventListener('click',async()=>{
+  try{
+    if(sounding){
+      stopSound();
+      playBtn.textContent='Listen';playBtn.classList.remove('active');
+      return;
+    }
+    recompute(true);
+    await startSound();
+    playBtn.textContent='Stop';playBtn.classList.add('active');
+  }catch(err){
+    sounding=false;
+    showToast("Sound couldn't start — "+(err&&err.message?err.message:err));
+  }
+});
+document.getElementById('miniStop').addEventListener('click',()=>{
+  stopSound();playBtn.textContent='Listen';playBtn.classList.remove('active');
+});
+document.getElementById('listenAll').addEventListener('click',()=>{
+  muted.clear();solos.clear();
+  applyMix();syncMixButtons();writeTable();writeReading();renderInfoLive(true);
+});
+document.getElementById('asAbove').addEventListener('click',()=>{
+  rate=1;document.getElementById('rate').value='1';
+  frozen=false;const fb=document.getElementById('freeze');fb.classList.remove('active');fb.textContent='Freeze';
+  skyTime=new Date();setInputFromSkyTime();recompute(true);
+  document.getElementById('skySection').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('scrollDown').addEventListener('click',()=>{
+  document.getElementById('skySection').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('shareBtn').addEventListener('click',()=>{
+  syncFromInputs();
+  const u=new URL(location.href.split('#')[0]);
+  u.hash=`t=${skyTime.toISOString()}&z=${encodeURIComponent(tz)}&la=${lat.toFixed(4)}&lo=${lon.toFixed(4)}`;
+  if(navigator.clipboard)navigator.clipboard.writeText(u.toString()).catch(()=>{});
+  showToast('Link copied');
+});
+function setInputFromSkyTime(){
+  const f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',hour12:false});
+  let p={};
+  try{for(const{type,value}of f.formatToParts(skyTime))p[type]=value;}
+  catch(_){const g=new Intl.DateTimeFormat('en-CA',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+    for(const{type,value}of g.formatToParts(skyTime))p[type]=value;}
+  dtEl.value=`${p.year}-${p.month}-${p.day}T${p.hour==='24'?'00':p.hour}:${p.minute}`;
+}
+
+new IntersectionObserver(es=>{
+  wheelVisible=es[0].isIntersecting;
+  document.getElementById('miniBar').classList.toggle('show',sounding&&!wheelVisible);
+},{threshold:0.05}).observe(document.getElementById('wheelPanel'));
+
+/* ---------- star field & scroll reveal ---------- */
+(function starField(){
+  const cv=document.getElementById('stars');
+  if(!cv||!cv.getContext)return;
+  const ctx=cv.getContext('2d');
+  if(!ctx)return;
+  const RM=(typeof matchMedia==='function')&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hero=document.getElementById('top');
+  let stars=[],W2=0,H2=0,dpr=1,active=true;
+  function size(){
+    dpr=Math.min(2,window.devicePixelRatio||1);
+    W2=hero.clientWidth||innerWidth;H2=hero.clientHeight||innerHeight;
+    cv.width=W2*dpr;cv.height=H2*dpr;
+    cv.style.width=W2+'px';cv.style.height=H2+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.max(120,Math.min(260,Math.round(W2*H2/9000)));
+    stars=[];
+    for(let i=0;i<n;i++)stars.push({
+      x:Math.random()*W2,y:Math.random()*H2,
+      r:Math.random()<.85?(.4+Math.random()*.9):(1.1+Math.random()*.9),
+      a:.25+Math.random()*.6,
+      ph:Math.random()*Math.PI*2,
+      sp:.3+Math.random()*1.1,
+      v:Math.random()<.12
+    });
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W2,H2);
+    for(const s of stars){
+      const tw=RM?1:(.6+.4*Math.sin(t*.001*s.sp+s.ph));
+      ctx.globalAlpha=s.a*tw;
+      ctx.fillStyle=s.v?'#a89bd6':'#ece6d6';
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.2832);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  function loop(t){ if(active&&!RM)draw(t); requestAnimationFrame(loop); }
+  size();draw(0);
+  if(!RM)requestAnimationFrame(loop);
+  window.addEventListener('resize',()=>{size();draw(0);});
+  if(typeof IntersectionObserver==='function')
+    new IntersectionObserver(es=>{active=es[0].isIntersecting;},{threshold:0}).observe(hero);
+})();
+(function scrollReveal(){
+  if(typeof IntersectionObserver!=='function'){
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));return;
+  }
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+
+/* ---------- boot ---------- */
+(function boot(){
+  buildAccordion();
+  const h=new URLSearchParams(location.hash.slice(1));
+  if(h.get('t')){
+    const t=new Date(h.get('t'));if(!isNaN(t))skyTime=t;
+    if(h.get('la'))lat=clamp(+h.get('la'),-90,90);
+    if(h.get('lo'))lon=clamp(+h.get('lo'),-180,180);
+    const res=resolvePlace();
+    tz=h.get('z')||res.tz;
+    document.getElementById('soBelow').open=true;
+  }else{
+    skyTime=new Date();
+    const guess=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const hit=FLAT.find(p=>p.z===guess);
+    if(hit){lat=hit.la;lon=hit.lo;tz=hit.z;}
+    else{tz='Europe/London';lat=51.51;lon=-0.13;}
+  }
+  resolvePlace();
+  setTzSelect(tz);
+  document.getElementById('lat').value=lat.toFixed(2);
+  document.getElementById('lon').value=lon.toFixed(2);
+  placeMarker();rebuildObserver();setInputFromSkyTime();updatePlaceLabel();
+  recompute(true);
+})();
+
+</script>
+</body>
+</html>
